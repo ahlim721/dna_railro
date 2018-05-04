@@ -1,0 +1,225 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="kor">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Dashboard">
+    <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
+
+    <title>Rail-ro Free pass</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static '/css/bootstrap.css' %}" rel="stylesheet">
+    <!--external css-->
+    <link href="{% static '/font-awesome/css/font-awesome.css' %}" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="{% static '/css/zabuto_calendar.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static '/js/gritter/css/jquery.gritter.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static '/lineicons/style.css' %}">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static '/css/style.css' %}" rel="stylesheet">
+    <link href="{% static '/css/style-responsive.css' %}" rel="stylesheet">
+
+    <script src="{% static '/js/chart-master/Chart.js' %}"></script>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+  <section id="container" >
+      <!-- **********************************************************************************************************************************************************
+      TOP BAR CONTENT & NOTIFICATIONS
+      *********************************************************************************************************************************************************** -->
+      <!--header start-->
+      <header class="header black-bg">
+              <div class="sidebar-toggle-box">
+                  <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
+              </div>
+            <!--logo start-->
+            <a href="/index" class="logo"><b>Rail-ro Free pass</b></a>
+            <!--logo end-->
+            <div class="top-menu">
+            	<ul class="nav pull-right top-menu">
+                    <li><a class="logout" href="/login">Logout</a></li>
+            	</ul>
+            </div>
+        </header>
+      <!--header end-->
+
+      <!-- **********************************************************************************************************************************************************
+      MAIN SIDEBAR MENU
+      *********************************************************************************************************************************************************** -->
+      <!--sidebar start-->
+      <aside>
+          <div id="sidebar"  class="nav-collapse ">
+              <!-- sidebar menu start-->
+              <ul class="sidebar-menu" id="nav-accordion">
+
+              	  <p class="centered"><img src="{% static '/img/default.jpg' %}" class="img-circle" width="60"></p>
+              	  <h5 class="centered">김주연</h5>
+
+                  <li class="mt">
+                      <a href="/schedule">
+                          <i class="fa fa-clock-o"></i>
+                          <span>스케쥴짜기</span>
+                      </a>
+                  </li>
+
+                  <li class="sub-menu">
+                      <a href="/location">
+                          <i class="fa fa-map-marker"></i>
+                          <span>장소추천</span>
+                      </a>
+                  </li>
+
+                  <li class="sub-menu">
+                      <a class="active" href="/community">
+                          <i class="fa fa-pencil"></i>
+                          <span>커뮤니티</span>
+                      </a>
+                  </li>
+                  <li class="sub-menu">
+                      <a href="javascript:;">
+                          <i class="fa fa-user"></i>
+                          <span>마이페이지</span>
+                      </a>
+                      <ul class="sub">
+                          <!-- TODO 링크 연결하기-->
+                          <li><a  href="/user_update">회원정보 수정</a></li>
+                          <li><a  href="/user_leave">회원탈퇴</a></li>
+                          <li><a  href="/past_list">과거여행 정보</a></li>
+                      </ul>
+                  </li>
+
+              </ul>
+              <!-- sidebar menu end-->
+          </div>
+      </aside>
+      <!--sidebar end-->
+
+      <!-- **********************************************************************************************************************************************************
+      MAIN CONTENT
+      *********************************************************************************************************************************************************** -->
+      <!--main content start-->
+      <section id="main-content">
+          <section class="wrapper site-min-height">
+            {% comment %}
+  totalCnt: <strong>{{ totalCnt }}</strong> current_page: <strong>{{ current_page }}</strong> boardList: <strong>{{ boardList|length }}</strong>
+  {% endcomment %}
+
+  <table cellspacing=1 width=700 border=0>
+      <tr>
+          <td>총 게시물수: {{ totalCnt }}</td>
+          <td><p align=right> 페이지:{{ current_page }}
+          </td>
+      </tr>
+  </table>
+
+  <table cellspacing=1 width=700 border=1>
+      <tr>
+          <td width=50><p align=center>번호</p></td>
+          <td width=100><p align=center>이름</p></td>
+          <td width=320><p align=center>제목</p></td>
+          <td width=100><p align=center>등록일</p></td>
+          <td width=100><p align=center>조회수</p></td>
+      </tr>
+
+      {% if boardList %}
+          <ul>
+              {% for boardRow in boardList %}
+              <script>console.log(boardRow);</script>
+              <tr>
+              <td width=50><p align=center>{{ boardRow.id }}</p></td>
+              <td width=100><p align=center>{{ boardRow.name }}</p></td>
+              <td width=320>
+                  <p align=center>
+                      <a href="/viewWork?memo_id={{ boardRow.id }}&current_page={{ current_page }}&searchStr=None" title="{{ boardRow.memo}}">{{ boardRow.subject }}
+                  </p>
+              </td>
+              <td width=100><p align=center>{{ boardRow.created_date }}</p></td>
+              <td width=100><p align=center>{{ boardRow.hits }}</p></td>
+              </tr>
+              {% endfor %}
+          </ul>
+      {% else %}
+          <p>No Data.</p>
+      {% endif %}
+  </table>
+
+  <table cellspacing=1 width=700 border=1 >
+      <tr> <td>
+          {% for page in totalPageList %}
+              <a href="/community?current_page={{page}}" >
+              [
+              {% ifequal page current_page %}
+                  <b>
+              {% endifequal %}
+              {{page}}
+
+              {% ifequal page current_page  %}
+                  </b>
+              {% endifequal %}
+              ]
+          {% endfor %}
+          </td> </tr>
+  </table>
+
+  <table width=700>
+      <tr>
+          <td><input type=button value="글쓰기"  OnClick="window.location='show_write_form'">    </td>
+          <td><form name=searchf method=post action="searchWithSubject">
+              <p align=right><input type=text name=searchStr size=50  maxlength=50>
+              <input type=submit value="글찾기"></p>
+          </td>
+      </tr>
+  </table>
+
+		</section><! --/wrapper -->
+      </section><!-- /MAIN CONTENT -->
+
+      <!--main content end-->
+
+      <!--footer start-->
+      <footer class="site-footer">
+          <div class="text-center">
+              &copy; 2018 DNA
+              <a href="community.html#" class="go-top">
+                  <i class="fa fa-angle-up"></i>
+              </a>
+          </div>
+      </footer>
+      <!--footer end-->
+  </section>
+
+    <!-- js placed at the end of the document so the pages load faster -->
+    <script src="{% static '/js/jquery.js' %}"></script>
+    <script src="{% static '/js/jquery-1.8.3.min.js' %}"></script>
+    <script src="{% static '/js/bootstrap.min.js' %}"></script>
+    <script class="include" type="text/javascript" src="{% static '/js/jquery.dcjqaccordion.2.7.js' %}"></script>
+    <script src="{% static '/js/jquery.scrollTo.min.js' %}"></script>
+    <script src="{% static '/js/jquery.nicescroll.js" type="text/javascript' %}"></script>
+    <script src="{% static '/js/jquery.sparkline.js' %}"></script>
+
+
+    <!--common script for all pages-->
+
+    <script type="text/javascript" src="{% static '/js/gritter/js/jquery.gritter.js' %}"></script>
+    <script type="text/javascript" src="{% static '/js/gritter-conf.js' %}"></script>
+
+    <!--script for this page-->
+    <script src="{% static '/js/sparkline-chart.js' %}"></script>
+	<script src="{% static '/js/zabuto_calendar.js' %}"></script>
+
+
+
+
+
+  </body>
+</html>
