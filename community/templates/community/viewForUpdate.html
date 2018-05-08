@@ -72,7 +72,7 @@
                   <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
               </div>
             <!--logo start-->
-            <a href="index.html" class="logo"><b>Rail-ro Free pass</b></a>
+            <a href="/index/" class="logo"><b>Rail-ro Free pass</b></a>
             <!--logo end-->
             <div class="top-menu">
             	<ul class="nav pull-right top-menu">
@@ -95,21 +95,21 @@
               	  <h5 class="centered">김주연</h5>
 
                   <li class="mt">
-                      <a href="schedule.html">
+                      <a href="/schedule/">
                           <i class="fa fa-clock-o"></i>
                           <span>스케쥴짜기</span>
                       </a>
                   </li>
 
                   <li class="sub-menu">
-                      <a href="location.html">
+                      <a href="/location/">
                           <i class="fa fa-map-marker"></i>
                           <span>장소추천</span>
                       </a>
                   </li>
 
                   <li class="sub-menu">
-                      <a class="active" href="community.html">
+                      <a class="active" href="/community/">
                           <i class="fa fa-pencil"></i>
                           <span>커뮤니티</span>
                       </a>
@@ -120,9 +120,9 @@
                           <span>마이페이지</span>
                       </a>
                       <ul class="sub">
-                          <li><a  href="user_update.html">회원정보 수정</a></li>
-                          <li><a  href="user_leave.html">회원탈퇴</a></li>
-                          <li><a  href="past_list.html">과거여행 정보</a></li>
+                          <li><a  href="/user_update/">회원정보 수정</a></li>
+                          <li><a  href="/user_leave/">회원탈퇴</a></li>
+                          <li><a  href="/past_list/">과거여행 정보</a></li>
                       </ul>
                   </li>
 
@@ -139,7 +139,7 @@
       <section id="main-content">
           <section class="wrapper site-min-height">
             <table cellspacing = 0 cellpadding = 5 border = 1 width=500>
-<form name=modifyform method=post action="/updateBoard/"> {% csrf_token %}
+<form name=modifyform method=post action="updateBoard/"> {% csrf_token %}
     <input type=hidden name=memo_id  value="{{memo_id}}">
     <input type=hidden name=current_page  value="{{current_page}} ">
     <input type=hidden name=searchStr  value="{{searchStr}} ">
@@ -181,12 +181,10 @@
     <script src="{% static '/js/bootstrap.min.js' %}"></script>
     <script class="include" type="text/javascript" src="{% static '/js/jquery.dcjqaccordion.2.7.js' %}"></script>
     <script src="{% static '/js/jquery.scrollTo.min.js' %}"></script>
-    <script src="{% static '/js/jquery.nicescroll.js" type="text/javascript' %}"></script>
     <script src="{% static '/js/jquery.sparkline.js' %}"></script>
 
 
     <!--common script for all pages-->
-    <script src="{% static '/js/common-scripts.js"></script>
 
     <script type="text/javascript" src="{% static '/js/gritter/js/jquery.gritter.js' %}"></script>
     <script type="text/javascript" src="{% static '/js/gritter-conf.js' %}"></script>
