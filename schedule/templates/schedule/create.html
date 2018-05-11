@@ -7,57 +7,38 @@
     <meta name="description" content="">
     <meta name="author" content="Dashboard">
     <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
-
     <title>Rail-ro Free pass</title>
-
     <!-- Bootstrap core CSS -->
-    <link href="{% static '/css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
     <!--external css-->
-    <link href="{% static '/font-awesome/css/font-awesome.css' %}" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="{% static '/css/zabuto_calendar.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static '/js/gritter/css/jquery.gritter.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static '/lineicons/style.css' %}">
-
+    <link href="{% static 'font-awesome/css/font-awesome.css' %}" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/zabuto_calendar.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'js/gritter/css/jquery.gritter.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'lineicons/style.css' %}">
     <!-- Custom styles for this template -->
-    <link href="{% static '/css/style.css' %}" rel="stylesheet">
-    <link href="{% static '/css/style-responsive.css' %}" rel="stylesheet">
-
-    <script src="{% static '/js/chart-master/Chart.js' %}"></script>
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style-responsive.css' %}" rel="stylesheet">
+    <script src="{% static 'js/chart-master/Chart.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <script>
+    function toggle(list) {
+        var list = $("#"+list+"_list")
+        var display_status = list.css("display")
 
-    <meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
-
-    <script language="javascript">
-      function writeCheck() {
-          var form = document.writeform;
-          if (!form.name.value)
-          {
-              alert("이름을 적어주세요");
-              form.name.focus();
-              return;
-          }
-          if (!form.subject.value) {
-              alert("제목을 적어주세요");
-              form.subject.focus();
-              return;
-          }
-          if (!form.memo.value) {
-              alert("내용을 적어주세요");
-              form.memo.focus();
-              return;
-          }
-          form.submit();
-      }
-  </script>
+        if(display_status === "none")
+          list.css("display","inline-flex")
+        else
+          list.css("display","none")
+    };
+    </script>
   </head>
-
   <body>
-
   <section id="container" >
       <!-- **********************************************************************************************************************************************************
       TOP BAR CONTENT & NOTIFICATIONS
@@ -72,7 +53,7 @@
             <!--logo end-->
             <div class="top-menu">
             	<ul class="nav pull-right top-menu">
-                    <li><a class="logout" href="login.html">Logout</a></li>
+                    <li><a class="logout" href="/login">Logout</a></li>
             	</ul>
             </div>
         </header>
@@ -87,7 +68,7 @@
               <!-- sidebar menu start-->
               <ul class="sidebar-menu" id="nav-accordion">
 
-              	  <p class="centered"><img src="{% static '/img/default.jpg' %}" class="img-circle" width="60"></p>
+              	  <p class="centered"><img src="{% static 'img/default.jpg' %}" class="img-circle" width="60"></a></p>
                   {% if user.is_authenticated %}
                     <h5 class="centered">{{user.username}}</h5>
                   {% else %}
@@ -95,7 +76,7 @@
                   {% endif %}
 
                   <li class="mt">
-                      <a href="/schedule">
+                      <a class="active" href="/schedule">
                           <i class="fa fa-clock-o"></i>
                           <span>스케쥴짜기</span>
                       </a>
@@ -109,7 +90,7 @@
                   </li>
 
                   <li class="sub-menu">
-                      <a class="active" href="/community">
+                      <a href="/community">
                           <i class="fa fa-pencil"></i>
                           <span>커뮤니티</span>
                       </a>
@@ -120,6 +101,7 @@
                           <span>마이페이지</span>
                       </a>
                       <ul class="sub">
+                          <!-- TODO 링크 연결하기-->
                           <li><a  href="/user_update">회원정보 수정</a></li>
                           <li><a  href="/user_leave">회원탈퇴</a></li>
                           <li><a  href="/past_list">과거여행 정보</a></li>
@@ -138,32 +120,33 @@
       <!--main content start-->
       <section id="main-content">
           <section class="wrapper site-min-height">
-            <table width=700 border=1 cellspacing=0 cellpadding=5>
-  <form name=writeform method=post action="DoWriteBoard">
-  <tr><td><b>이름</b></td><td><input type=text name=name size=50  maxlength=50></td></tr>
-  <tr><td><b>이메일</b></td><td><input type=text name=email size=50  maxlength=50></td></tr>
-  <tr><td><b>제목</b></td><td><input type=text name=subject size=50  maxlength=50></td></tr>
-  <tr><td><b>내용</b></td><td><textarea name=memo cols=50 rows=10></textarea></td></tr>
-  {% csrf_token %}
-  </form>
-  </table>
+            <div class="row mt">
+              <div class="col-lg-12">
+                <p> <div style="width:100%;display: inline-flex" class="form-control">
+                      이름 : {{ sche.identifier }} <hr>
+                      내일로유형 : {{ sche.railro_type }} <hr>
+                      내일로일권 : {{ sche.railro_day }} <hr>
+                      출발지 : {{ sche.start_loc }} <hr>
+                      도착지 : {{ sche.end_loc }} <hr>
+                      출발날짜 : {{ sche.start_date }} <hr>
+                      도착날짜 : {{ sche.end_date }} <hr>
+                    </div>
+                </p>
 
-  <table width=700 border=1 cellspacing=0 cellpadding=0>
-  <tr><td>
-  <input type=button value="등록" OnClick="javascript:writeCheck();">
-  </td></tr>
-  </table>
-
-		</section><! --/wrapper -->
+                <div class="btn-group pull-right">
+    						  <!--<button type="button" class="btn btn-default ">Previous</button>-->
+    						  <button type="submit" class="btn btn-default " onclick="writeCheck()">Next</button>
+    						</div>
+          		</div>
+          	</div>
+		      </section><! --/wrapper -->
       </section><!-- /MAIN CONTENT -->
-
       <!--main content end-->
-
       <!--footer start-->
       <footer class="site-footer">
           <div class="text-center">
               &copy; 2018 DNA
-              <a href="writeBoard.html#" class="go-top">
+              <a href="schedule.html#" class="go-top">
                   <i class="fa fa-angle-up"></i>
               </a>
           </div>
@@ -172,25 +155,46 @@
   </section>
 
     <!-- js placed at the end of the document so the pages load faster -->
-    <script src="{% static '/js/jquery.js' %}"></script>
-    <script src="{% static '/js/jquery-1.8.3.min.js' %}"></script>
-    <script src="{% static '/js/bootstrap.min.js' %}"></script>
-    <script class="include" type="text/javascript" src="{% static '/js/jquery.dcjqaccordion.2.7.js' %}"></script>
-    <script src="{% static '/js/jquery.scrollTo.min.js' %}"></script>
-    <script src="{% static '/js/jquery.sparkline.js' %}"></script>
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'js/jquery-1.8.3.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script class="include" type="text/javascript" src="{% static 'js/jquery.dcjqaccordion.2.7.js' %}"></script>
+    <script src="{% static 'js/jquery.scrollTo.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sparkline.js' %}"></script>
 
 
     <!--common script for all pages-->
 
-    <script type="text/javascript" src="{% static '/js/gritter/js/jquery.gritter.js' %}"></script>
-    <script type="text/javascript" src="{% static '/js/gritter-conf.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/gritter/js/jquery.gritter.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/gritter-conf.js' %}"></script>
 
     <!--script for this page-->
-    <script src="{% static '/js/sparkline-chart.js' %}"></script>
-	<script src="{% static '/js/zabuto_calendar.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+  <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <script type='text/javascript' src='https://code.jquery.com/jquery-1.8.3.js'></script>
+
+    <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script>
+  <script src="{% static 'js/bootstrap-datepicker.kr.js' %}" charset="UTF-8"></script>
 
 
+	<script type="application/javascript">
 
+  $(function(){
+      $('.input-group.date').datepicker({
+          calendarWeeks: false,
+          todayHighlight: true,
+          autoclose: true,
+          format: "yyyy-mm-dd",
+          language: "kr"
+      });
+  });
+        function myNavFunction(id) {
+            $("#date-popover").hide();
+            var nav = $("#" + id).data("navigation");
+            var to = $("#" + id).data("to");
+            console.log('nav ' + nav + ' to: ' + to.month + '/' + to.year);
+        }
+    </script>
 
 
   </body>

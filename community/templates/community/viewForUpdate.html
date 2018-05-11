@@ -92,7 +92,11 @@
               <ul class="sidebar-menu" id="nav-accordion">
 
               	  <p class="centered"><img src="{% static '/img/default.jpg' %}" class="img-circle" width="60"></p>
-              	  <h5 class="centered">김주연</h5>
+                  {% if user.is_authenticated %}
+                    <h5 class="centered">{{user.username}}</h5>
+                  {% else %}
+                    <h5 class="centered" href="/login">로그인 해주세요.</h5>
+                  {% endif %}
 
                   <li class="mt">
                       <a href="/schedule/">

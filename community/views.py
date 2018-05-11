@@ -62,7 +62,7 @@ def DoWriteBoard(request):
     br.save()
 
     # 다시 조회
-    url = '/community?current_page=1'
+    url = '?current_page=1'
     return HttpResponseRedirect(url)
 
 def viewWork(request):

@@ -47,6 +47,43 @@
 
     -->
     </script>
+    <script language="javascript">
+      function writeCheck() {
+        var form = document.scheduleform;
+        if (!form.railro_type.value)
+        {
+            alert("타입을 선택해주세요");
+            form.railro_type.focus();
+            return;
+        }
+        if (!form.railro_day.value) {
+            alert("일권을 선택해주세요");
+            form.railro_day.focus();
+            return;
+        }
+        if (!form.start_loc.value) {
+            alert("출발지를 선택해주세요");
+            form.start_loc.focus();
+            return;
+        }
+        if (!form.end_loc.value) {
+            alert("도착지를 선택해주세요");
+            form.end_loc.focus();
+            return;
+        }
+        if (!form.start_date.value) {
+            alert("출발날짜를 선택해주세요");
+            form.start_date.focus();
+            return;
+        }
+        if (!form.end_date.value) {
+            alert("도착날짜를 선택해주세요");
+            form.end_date.focus();
+            return;
+        }
+        form.submit();
+      }
+  </script>
   </head>
 
   <body>
@@ -81,7 +118,11 @@
               <ul class="sidebar-menu" id="nav-accordion">
 
               	  <p class="centered"><img src="{% static 'img/default.jpg' %}" class="img-circle" width="60"></a></p>
-              	  <h5 class="centered">김주연</h5>
+                  {% if user.is_authenticated %}
+                    <h5 class="centered">{{user.username}}</h5>
+                  {% else %}
+                    <h5 class="centered" href="/login">로그인 해주세요.</h5>
+                  {% endif %}
 
                   <li class="mt">
                       <a class="active" href="/schedule">
@@ -129,15 +170,20 @@
       <section id="main-content">
           <section class="wrapper site-min-height">
             <div class="row mt">
-
               <div class="col-lg-12">
+                <form name="scheduleform" method="post" action="doschedule">
+                  {% csrf_token %}
                 <p> 내일로 유형 :
-                  <button type="button" class="btn btn-round btn-default">내일로 패스</button>
-                  <button type="button" class="btn btn-round btn-default">프리미엄 내일로 패스</button>
+                  <select name="railro_type">
+                    <option value="general">내일로 패스</option>
+                    <option value="premium">프리미엄 내일로 패스</option>
+                  </select>
                 </p>
                 <p> 일권 선택 :
-                  <button type="button" class="btn btn-round btn-default">5일권</button>
-                  <button type="button" class="btn btn-round btn-default">7일권</button>
+                  <select name="railro_day">
+                    <option value="five" >5일권</option>
+                    <option value="seven">7일권</option>
+                  </select>
                 </p>
                 <p> 출발지 선택 :
                   <div style="width:100%;display: inline-flex">
@@ -150,12 +196,10 @@
                         <option id="src_{{key}}" onclick="api('src_{{key}}')">{{ val }}</option>
                       {% endfor %}
         						 </select>
-                     <select id="src_locList" multiple class="form-control" style="width:30%">
-
+                     <select name="start_loc" id="src_locList" multiple class="form-control" style="width:30%">
          						</select>
                   </div>
                 </p>
-
                 <p> 도착지 선택 :
                   <div style="width:100%;display: inline-flex">
                     <input style="width:50%"type="text"  class="form-control" placeholder="도착지를 선택하세요">
@@ -167,31 +211,26 @@
                         <option id="des_{{key}}" onclick="api('des_{{key}}')">{{ val }}</option>
                       {% endfor %}
                      </select>
-                    <select id="des_locList" multiple class="form-control" style="width:30%">
-
+                    <select name="end_loc" id="des_locList" multiple class="form-control" style="width:30%">
         						</select>
                   </div>
                 </p>
-
                 <p> 출발 날짜 선택 :
                   <div class="input-group date col-md-3" >
-                    <input type="text" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                    <input type="text" name="start_date" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                   </div>
                 </p>
                 <p> 도착 날짜 선택 :
                   <div class="input-group date col-md-3" >
-                    <input type="text" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                    <input type="text" name="end_date" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                   </div>
-
                 </p>
-
-
+                {% csrf_token %}
+              </form>
                 <div class="btn-group pull-right">
-    						  <button type="button" class="btn btn-default ">Previous</button>
-    						  <button type="button" class="btn btn-default ">Next</button>
+    						  <!--<button type="button" class="btn btn-default ">Previous</button>-->
+    						  <button type="submit" class="btn btn-default " onclick="writeCheck()">Next</button>
     						</div>
-
-
           		</div>
           	</div>
 
@@ -242,7 +281,7 @@
           calendarWeeks: false,
           todayHighlight: true,
           autoclose: true,
-          format: "yyyy/mm/dd",
+          format: "yyyy-mm-dd",
           language: "kr"
       });
   });
@@ -261,10 +300,10 @@
                   console.log(data)
                   var datalist = '';
                   for(var i=1; i<data.length; i++) {
-                    datalist += '<option>' + data[i]['location_name'] + '</option>'
+                    datalist += '<option value=' + data[i][0] + '>' + data[i][1] + '</option>'
                   }
-                  if(data[0]['type'] == 'src') {src_locList.html(datalist)}
-                  if(data[0]['type'] == 'des') {des_locList.html(datalist)}
+                  if(data[0][1] == 'src') {src_locList.html(datalist)}
+                  if(data[0][1] == 'des') {des_locList.html(datalist)}
                 },
                 error : function() {
                   console.log("통신실패");

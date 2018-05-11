@@ -28,6 +28,9 @@ DEBUG = True
 ALLOWED_HOSTS = ['127.0.0.1', '220.67.128.181']
 
 
+#LOGIN_URL = '/login/'
+#LOGIN_REDIRECT_URL = '/home/'
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -111,6 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'auth.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/

@@ -4,3 +4,8 @@ __pycache__
 myvenv
 db.sqlite3
 .DS_Store
+/schedule/migrations
+/community/migrations
+/home/migrations
+/location/migrations
+/mypage/migrations
