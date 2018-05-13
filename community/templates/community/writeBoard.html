@@ -35,12 +35,12 @@
     <script language="javascript">
       function writeCheck() {
           var form = document.writeform;
-          if (!form.name.value)
+          /*if (!form.name.value)
           {
               alert("이름을 적어주세요");
               form.name.focus();
               return;
-          }
+          }*/
           if (!form.subject.value) {
               alert("제목을 적어주세요");
               form.subject.focus();
@@ -91,7 +91,7 @@
                   {% if user.is_authenticated %}
                     <h5 class="centered">{{user.username}}</h5>
                   {% else %}
-                    <h5 class="centered" href="/login">로그인 해주세요.</h5>
+                    <h5 class="centered">로그인 해주세요.</h5>
                   {% endif %}
 
                   <li class="mt">
@@ -140,7 +140,7 @@
           <section class="wrapper site-min-height">
             <table width=700 border=1 cellspacing=0 cellpadding=5>
   <form name=writeform method=post action="DoWriteBoard">
-  <tr><td><b>이름</b></td><td><input type=text name=name size=50  maxlength=50></td></tr>
+  <tr><td><b>이름</b></td><td><p>{{user.username}}</p></td></tr>
   <tr><td><b>이메일</b></td><td><input type=text name=email size=50  maxlength=50></td></tr>
   <tr><td><b>제목</b></td><td><input type=text name=subject size=50  maxlength=50></td></tr>
   <tr><td><b>내용</b></td><td><textarea name=memo cols=50 rows=10></textarea></td></tr>

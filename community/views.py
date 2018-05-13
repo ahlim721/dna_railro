@@ -6,10 +6,13 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseRedirect
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 rowsPerPage = 10
 
 # Create your views here.
 
+@login_required
 def community(request):
     boardList = Board.objects.order_by('-id')[0:10]
     current_page =1
@@ -25,8 +28,7 @@ def community(request):
     # 템플릿으로 필요한 정보들을 넘기는 부분이다. 이를 통해서 정적인 템플릿에 동적인 데이터가 결합되게 되는 것이다.
     # 우리는 게시판 최초 화면 처리를 위해서 listSpecificPage.html 템플릿을 호출했다.
     # 그리고 필요한 정보들을 dictionary 로 전달했다.
-    return render_to_response('community/community.html', {'boardList': boardList, 'totalCnt': totalCnt,
-                                                          'current_page':current_page ,'totalPageList':totalPageList} )
+    return render(request, 'community/community.html', {'boardList': boardList, 'totalCnt': totalCnt, 'current_page':current_page ,'totalPageList':totalPageList} )
 class pagingHelper:
     "paging helper class"
     def getTotalPageList(self, total_cnt, rowsPerPage):
@@ -48,12 +50,12 @@ class pagingHelper:
         self.totalPageList  = 0
 
 def show_write_form(request):
-    return render_to_response('community/writeBoard.html')
+    return render(request, 'community/writeBoard.html')
 
 @csrf_exempt
 def DoWriteBoard(request):
     br = Board (subject = request.POST['subject'],
-                      name = request.POST['name'],
+                      name = User.objects.get(username=request.user.get_username()),
                       mail = request.POST['email'],
                       memo = request.POST['memo'],
                       created_date = timezone.now(),
@@ -62,7 +64,7 @@ def DoWriteBoard(request):
     br.save()
 
     # 다시 조회
-    url = '?current_page=1'
+    url = '/community?current_page=1'
     return HttpResponseRedirect(url)
 
 def viewWork(request):
@@ -75,7 +77,7 @@ def viewWork(request):
     #print 'boardData.hits', boardData.hits
     Board.objects.filter(id=pk).update(hits = boardData.hits + 1)
 
-    return render_to_response('community/viewMemo.html', {'memo_id': request.GET['memo_id'],
+    return render(request, 'community/viewMemo.html', {'memo_id': request.GET['memo_id'],
                                                 'current_page':request.GET['current_page'],
                                                 'searchStr': request.GET['searchStr'],
                                                 'boardData': boardData } )
@@ -92,7 +94,7 @@ def viewForUpdate(request):
 
     boardData = Board.objects.get(id=memo_id)
 
-    return render_to_response('community/viewForUpdate.html', {'memo_id': request.GET['memo_id'],
+    return render(request, 'community/viewForUpdate.html', {'memo_id': request.GET['memo_id'],
                                                 'current_page':request.GET['current_page'],
                                                 'searchStr': request.GET['searchStr'],
                                                 'boardData': boardData } )
@@ -180,5 +182,5 @@ def listSearchedSpecificPageWork(request):
     boardList = Board.objects.filter(subject__contains=searchStr)
     #print'boardList=',boardList
 
-    return render_to_response('community/listSearchedSpecificPage.html', {'boardList': boardList, 'totalCnt': totalCnt,
+    return render(request, 'community/listSearchedSpecificPage.html', {'boardList': boardList, 'totalCnt': totalCnt,
                                                         'pageForView':int(pageForView) ,'searchStr':searchStr, 'totalPageList':totalPageList} )
