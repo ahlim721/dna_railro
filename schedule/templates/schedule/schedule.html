@@ -33,22 +33,20 @@
     <![endif]-->
 
     <script>
-
     function toggle(list) {
-
         var list = $("#"+list+"_list")
         var display_status = list.css("display")
-
         if(display_status === "none")
           list.css("display","inline-flex")
         else
           list.css("display","none")
     };
-
     -->
     </script>
     <script language="javascript">
       function writeCheck() {
+        //var now = new Date();
+        //var todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         var form = document.scheduleform;
         if (!form.railro_type.value)
         {
