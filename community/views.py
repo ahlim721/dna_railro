@@ -56,7 +56,6 @@ def show_write_form(request):
 def DoWriteBoard(request):
     br = Board (subject = request.POST['subject'],
                       name = User.objects.get(username=request.user.get_username()),
-                      mail = request.POST['email'],
                       memo = request.POST['memo'],
                       created_date = timezone.now(),
                       hits = 0
@@ -113,7 +112,6 @@ def updateBoard(request):
 
     # Update DataBase
     Board.objects.filter(id=memo_id).update(
-                                                  mail= request.POST['mail'],
                                                   subject= request.POST['subject'],
                                                   memo= request.POST['memo']
                                                   )
