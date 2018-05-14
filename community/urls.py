@@ -12,5 +12,5 @@ urlpatterns = [
     url(r'^viewForDelete', views.viewForDelete),
     url(r'^searchWithSubject', views.searchWithSubject),
 
-    url(r'^listSearchedSpecificPageWork/$', views.listSearchedSpecificPageWork),
+    url(r'^listSearchedSpecificPageWork', views.listSearchedSpecificPageWork),
 ]

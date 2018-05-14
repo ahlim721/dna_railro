@@ -137,23 +137,37 @@
       *********************************************************************************************************************************************************** -->
       <!--main content start-->
       <section id="main-content">
-          <section class="wrapper site-min-height">
-            <table width=700 border=1 cellspacing=0 cellpadding=5>
-  <form name=writeform method=post action="DoWriteBoard">
-  <tr><td><b>이름</b></td><td><p>{{user.username}}</p></td></tr>
-  <tr><td><b>이메일</b></td><td><input type=text name=email size=50  maxlength=50></td></tr>
-  <tr><td><b>제목</b></td><td><input type=text name=subject size=50  maxlength=50></td></tr>
-  <tr><td><b>내용</b></td><td><textarea name=memo cols=50 rows=10></textarea></td></tr>
-  {% csrf_token %}
-  </form>
-  </table>
+      <section class="wrapper site-min-height">
 
-  <table width=700 border=1 cellspacing=0 cellpadding=0>
-  <tr><td>
-  <input type=button value="등록" OnClick="javascript:writeCheck();">
-  </td></tr>
-  </table>
+        <div class="container-fluid">
+          <form class="form-horizontal" name=writeform method=post action="DoWriteBoard">
+            <div class="form-group">
+              <label  class="col-sm-2 control-label">이름</label>
+              <div class="col-sm-10">
+                <input name=name class="form-control" placeholder="이름">
+              </div>
+            </div>
+            <div class="form-group">
+              <label  class="col-sm-2 control-label">제목</label>
+              <div class="col-sm-10">
+                <input name=subject class="form-control" placeholder="제목">
+              </div>
+            </div>
+            <div class="form-group">
+              <label  class="col-sm-2 control-label">내용</label>
+              <div class="col-sm-10">
+                <textarea name=memo cols=50 rows=10 class="form-control" placeholder="내용"></textarea>
+              </div>
+            </div>
+            {% csrf_token %}
+          </form>
 
+
+          <div class="btn-group pull-right">
+            <button type="button" class="btn btn-default btn-sm" OnClick="javascript:writeCheck()">등록</button>
+          </div>
+
+        </div>
 		</section><! --/wrapper -->
       </section><!-- /MAIN CONTENT -->
 
