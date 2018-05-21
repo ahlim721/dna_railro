@@ -25,7 +25,7 @@ SECRET_KEY = '%xsz_9dc@s6+gmsf74upsnwx27ksz54e@kojfop=-w(0fnw(8('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '220.67.128.181']
+ALLOWED_HOSTS = ['127.0.0.1', '220.67.128.181', 'localhost']
 
 
 #LOGIN_URL = '/login/'

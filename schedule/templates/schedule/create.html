@@ -132,15 +132,21 @@
                       도착날짜 : {{ sche.end_date }} <hr>
                     </div>
                 </p>
-                <p> <div style="width:100%;display: inline-flex" class="form-control">
-                      {{sche.start_loc}} &nbsp;->&nbsp;
+                <p> <div style="width:100%;display: inline-flex" id="sche_list" class="form-control">{{sche.start_loc}}</div></p>
+                <p> <div style="height:3%;width:100%;display: inline-flex" class="form-control">
+                    테마를 선택하세요 &nbsp;
+                      <select multiple class="form-control" style="width:20%"name="railro_thema" >
+                        <option id="eat" onclick="findThema('eat')">맛집</option>
+                        <option id="picture" onclick="findThema('picture')">인생샷</option>
+                        <option id="activity" onclick="findThema('activity')">액티비티</option>
+                        <option id="media" onclick="findThema('media')">미디어명소</option>
+                      </select>  &nbsp; &nbsp;
+                    추천여행지 : &nbsp;
+                    <select name="recommend_place" id="place_list" multiple class="form-control" style="width:30%">
+                     </select>
+                     <button class="btn btn-default" onclick="selectLoc()">선택</button>
                     </div>
                 </p>
-                <p> <div style="width:100%;display: inline-flex" class="form-control">
-
-                    </div>
-                </p>
-
                 <div class="btn-group pull-right">
     						  <!--<button type="button" class="btn btn-default ">Previous</button>-->
     						  <button type="submit" class="btn btn-default " onclick="writeCheck()">Next</button>
@@ -196,6 +202,43 @@
           language: "kr"
       });
   });
+
+  var place_list = $("#place_list"),
+      sche_list = $("#sche_list");
+  var start_loc, end_loc = "{{en_l.loc_key}}"
+  if(!$("#place_list option:selected").val()) start_loc = "{{st_l.loc_key}}"
+
+  function findThema(button_key) {
+    console.log(button_key)
+    $.ajax({
+      type : "GET",
+      url : "findThema?key="+button_key+"&start_loc="+start_loc+"&end_loc="+end_loc,
+      dataType : "json",
+      success : function(data) {
+        console.log(data)
+        var datalist = '';
+        for(var i=0; i<data.length; i++) {
+          datalist += '<option id=' + data[i][0] + '>' + data[i][1] + '</option>'
+        }
+        place_list.html(datalist)
+      },
+      error : function() {
+        console.log("findThema : 통신실패")
+      }
+    })
+  }
+
+  function selectLoc() {
+    if(!$("#place_list option:selected").val()) {
+      alert("여행지를 선택해주세요");
+      $("#place_list").focus();
+      return;
+    }
+    var j = $("#place_list option:selected").val();
+    var datalist = '' + $("#sche_list").text() + '&nbsp;->&nbsp;' + j;
+    start_loc = $("#place_list option:selected").attr('id');
+    sche_list.html(datalist)
+  }
         function myNavFunction(id) {
             $("#date-popover").hide();
             var nav = $("#" + id).data("navigation");

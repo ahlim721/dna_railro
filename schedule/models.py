@@ -1,6 +1,28 @@
 from django.db import models
 
 # Create your models here.
+class Location_dist(models.Model):
+    location = models.OneToOneField(
+        'Location_weight',
+        on_delete=models.CASCADE,
+        null=False,
+        primary_key=True,
+    )
+    dist = models.TextField()
+
+class Location_value(models.Model):
+    location = models.OneToOneField(
+        'Location_weight',
+        on_delete=models.CASCADE,
+        null=False,
+        primary_key=True,
+    )
+    latitude = models.FloatField(default=0)
+    longtitude = models.FloatField(default=0)
+
+    def __str__(self):
+        return self.location
+
 class Location_weight(models.Model):
     loc_key = models.CharField(max_length=20)
     state = models.ForeignKey(

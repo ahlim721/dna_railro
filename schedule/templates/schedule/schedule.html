@@ -172,13 +172,13 @@
                 <form name="scheduleform" method="post" action="doschedule">
                   {% csrf_token %}
                 <p> 내일로 유형 :
-                  <select name="railro_type">
+                  <select class="btn btn-round" name="railro_type">
                     <option value="general">내일로 패스</option>
                     <option value="premium">프리미엄 내일로 패스</option>
                   </select>
                 </p>
                 <p> 일권 선택 :
-                  <select name="railro_day">
+                  <select class="btn btn-round" name="railro_day">
                     <option value="five" >5일권</option>
                     <option value="seven">7일권</option>
                   </select>

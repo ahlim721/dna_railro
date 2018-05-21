@@ -6,4 +6,5 @@ urlpatterns = [
     url(r'^test_api',views.test_api, name="test_api"),
     url(r'^create/(\d+)', views.create, name="create"),
     url(r'^doschedule', views.doschedule, name="doschedule"),
+    url(r'^create/findThema?', views.findThema, name="findThema"),
 ]
