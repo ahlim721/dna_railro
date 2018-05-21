@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.utils import timezone
 from .models import Board
+from .models import Comment
 import json
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
@@ -72,6 +73,9 @@ def viewWork(request):
     boardData = Board.objects.get(id=pk)
     #print boardData.memo
 
+    commentData = Comment.objects.all()
+
+
     # Update DataBase
     #print 'boardData.hits', boardData.hits
     Board.objects.filter(id=pk).update(hits = boardData.hits + 1)
@@ -79,7 +83,7 @@ def viewWork(request):
     return render(request, 'community/viewMemo.html', {'memo_id': request.GET['memo_id'],
                                                 'current_page':request.GET['current_page'],
                                                 'searchStr': request.GET['searchStr'],
-                                                'boardData': boardData } )
+                                                'boardData': boardData , 'commentData':commentData  } )
 
 def viewForUpdate(request):
     memo_id = request.GET['memo_id']
@@ -91,7 +95,7 @@ def viewForUpdate(request):
     #print 'current_page', current_page
     #print 'searchStr', searchStr
 
-    boardData = Board.objects.get(id=memo_id)
+    boardData = Board.objects.get(id)
 
     return render(request, 'community/viewForUpdate.html', {'memo_id': request.GET['memo_id'],
                                                 'current_page':request.GET['current_page'],
@@ -182,3 +186,17 @@ def listSearchedSpecificPageWork(request):
 
     return render(request, 'community/listSearchedSpecificPage.html', {'boardList': boardList, 'totalCnt': totalCnt,
                                                         'pageForView':int(pageForView) ,'searchStr':searchStr, 'totalPageList':totalPageList} )
+
+@csrf_exempt
+def addComment(request):
+    current_page = request.POST['current_page']
+    #i = 'memo_id' in request.POST
+    br = Comment (cname = User.objects.get(username=request.user.get_username()),
+                    comm = request.POST['comm'],
+                    memo_id = Board.objects.get(id=request.POST['memo_id']),
+                    )
+    br.save()
+
+    # 다시 조회
+    url = 'viewWork?memo_id='+request.POST['memo_id']+'&current_page='+current_page+'&searchStr=None'
+    return HttpResponseRedirect(url)

@@ -13,4 +13,6 @@ urlpatterns = [
     url(r'^searchWithSubject', views.searchWithSubject),
 
     url(r'^listSearchedSpecificPageWork', views.listSearchedSpecificPageWork),
+    url(r'^addComment', views.addComment),
+
 ]

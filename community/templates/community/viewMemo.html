@@ -1,222 +1,254 @@
 {% load staticfiles %}
 <!DOCTYPE html>
 <html lang="kor">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="Dashboard">
-    <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
 
-    <title>Rail-ro Free pass</title>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="Dashboard">
+  <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
 
-    <!-- Bootstrap core CSS -->
-    <link href="{% static '/css/bootstrap.css' %}" rel="stylesheet">
-    <!--external css-->
-    <link href="{% static '/font-awesome/css/font-awesome.css' %}" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="{% static '/css/zabuto_calendar.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static '/js/gritter/css/jquery.gritter.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static '/lineicons/style.css' %}">
+  <title>Rail-ro Free pass</title>
 
-    <!-- Custom styles for this template -->
-    <link href="{% static '/css/style.css' %}" rel="stylesheet">
-    <link href="{% static '/css/style-responsive.css' %}" rel="stylesheet">
+  <!-- Bootstrap core CSS -->
+  <link href="{% static '/css/bootstrap.css' %}" rel="stylesheet">
+  <!--external css-->
+  <link href="{% static '/font-awesome/css/font-awesome.css' %}" rel="stylesheet" />
+  <link rel="stylesheet" type="text/css" href="{% static '/css/zabuto_calendar.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static '/js/gritter/css/jquery.gritter.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static '/lineicons/style.css' %}">
 
-    <script src="{% static '/js/chart-master/Chart.js' %}"></script>
+  <!-- Custom styles for this template -->
+  <link href="{% static '/css/style.css' %}" rel="stylesheet">
+  <link href="{% static '/css/style-responsive.css' %}" rel="stylesheet">
 
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
+  <script src="{% static '/js/chart-master/Chart.js' %}"></script>
+
+  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-    <meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
-    <script language="javascript">
-      function writeCheck() {
-          var form = document.writeform;
+  <meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+  <script language="javascript">
+    var u1 = "{{user.username}}"
+    var u2 = "{{boardData.name}}"
 
-          if (!form.name.value)
-          {
-              alert("이름을 적어주세요");
-              form.name.focus();
-              return;
-          }
-          if (!form.subject.value) {
-              alert("제목을 적어주세요");
-              form.subject.focus();
-              return;
-          }
-          if (!form.memo.value) {
-              alert("내용을 적어주세요");
-              form.memo.focus();
-              return;
-          }
-          form.submit();
-      }
-  function boardlist() {
-    var s = "{{searchStr}}";
+    console.log(u1);
+    console.log(u2);
 
-    if (s == "None")
-      location.href = '/community?current_page={{current_page}}';
-    else
-      location.href = 'listSearchedSpecificPageWork?pageForView={{current_page}}&searchStr={{searchStr}}';
-  }
+    // user_name과 memo_name이 다르면 수정과 삭제를 할수없도록
+    $(document).ready(function() {
+      if (u1 != u2)
+        $("#modi").hide();
+        $("#del").hide();
 
-  function boardmodify() {
-    location.href = 'viewForUpdate?memo_id={{memo_id}}&current_page={{current_page}}&searchStr={{searchStr}}';
-  }
+    });
+    //if (u1 != u2)
+    //  t.css("display", "none")
+    //      $("#modi").hide();
+    //      document.getElementById("#modi").style.display="none";
 
-  function boarddelete() {
-    location.href = 'viewForDelete?memo_id={{memo_id}}&current_page={{current_page}}';
-  }
-</script>
-  </head>
 
-  <body>
+    function boardlist() {
+      var s = "{{searchStr}}";
 
-  <section id="container" >
-      <!-- **********************************************************************************************************************************************************
+      if (s == "None")
+        location.href = '/community?current_page={{current_page}}';
+      else
+        location.href = 'listSearchedSpecificPageWork?pageForView={{current_page}}&searchStr={{searchStr}}';
+    }
+
+    function boardmodify() {
+
+      location.href = 'viewForUpdate?memo_id={{memo_id}}&current_page={{current_page}}&searchStr={{searchStr}}';
+    }
+
+    function boarddelete() {
+      location.href = 'viewForDelete?memo_id={{memo_id}}&current_page={{current_page}}';
+    }
+
+    function writeCheck() {
+        var form = document.writeform;
+        console.log(form);
+        form.submit();
+    }
+
+  </script>
+</head>
+
+<body>
+
+  <section id="container">
+    <!-- **********************************************************************************************************************************************************
       TOP BAR CONTENT & NOTIFICATIONS
       *********************************************************************************************************************************************************** -->
-      <!--header start-->
-      <header class="header black-bg">
-              <div class="sidebar-toggle-box">
-                  <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
-              </div>
-            <!--logo start-->
-            <a href="/index/" class="logo"><b>Rail-ro Free pass</b></a>
-            <!--logo end-->
-            <div class="top-menu">
-            	<ul class="nav pull-right top-menu">
-                    <li><a class="logout" href="login.html">Logout</a></li>
-            	</ul>
-            </div>
-        </header>
-      <!--header end-->
+    <!--header start-->
+    <header class="header black-bg">
+      <div class="sidebar-toggle-box">
+        <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
+      </div>
+      <!--logo start-->
+      <a href="/index/" class="logo"><b>Rail-ro Free pass</b></a>
+      <!--logo end-->
+      <div class="top-menu">
+        <ul class="nav pull-right top-menu">
+          <li><a class="logout" href="/login/">Logout</a></li>
+        </ul>
+      </div>
+    </header>
+    <!--header end-->
 
-      <!-- **********************************************************************************************************************************************************
+    <!-- **********************************************************************************************************************************************************
       MAIN SIDEBAR MENU
       *********************************************************************************************************************************************************** -->
-      <!--sidebar start-->
-      <aside>
-          <div id="sidebar"  class="nav-collapse ">
-              <!-- sidebar menu start-->
-              <ul class="sidebar-menu" id="nav-accordion">
+    <!--sidebar start-->
+    <aside>
+      <div id="sidebar" class="nav-collapse ">
+        <!-- sidebar menu start-->
+        <ul class="sidebar-menu" id="nav-accordion">
 
-              	  <p class="centered"><img src="{% static '/img/default.jpg' %}" class="img-circle" width="60"></p>
-                  {% if user.is_authenticated %}
-                    <h5 class="centered">{{user.username}}</h5>
-                  {% else %}
-                    <h5 class="centered" href="/login">로그인 해주세요.</h5>
-                  {% endif %}
+          <p class="centered"><img src="{% static '/img/default.jpg' %}" class="img-circle" width="60"></p>
+          {% if user.is_authenticated %}
+          <h5 class="centered">{{user.username}}</h5> {% else %}
+          <h5 class="centered" href="/login">로그인 해주세요.</h5> {% endif %}
 
-                  <li class="mt">
-                      <a href="/schedule/">
+          <li class="mt">
+            <a href="/schedule/">
                           <i class="fa fa-clock-o"></i>
                           <span>스케쥴짜기</span>
                       </a>
-                  </li>
+          </li>
 
-                  <li class="sub-menu">
-                      <a href="/location">
+          <li class="sub-menu">
+            <a href="/location">
                           <i class="fa fa-map-marker"></i>
                           <span>장소추천</span>
                       </a>
-                  </li>
+          </li>
 
-                  <li class="sub-menu">
-                      <a class="active" href="/community/">
+          <li class="sub-menu">
+            <a class="active" href="/community/">
                           <i class="fa fa-pencil"></i>
                           <span>커뮤니티</span>
                       </a>
-                  </li>
-                  <li class="sub-menu">
-                      <a href="javascript:;">
+          </li>
+          <li class="sub-menu">
+            <a href="javascript:;">
                           <i class="fa fa-user"></i>
                           <span>마이페이지</span>
                       </a>
-                      <ul class="sub">
-                          <li><a  href="/user_update/">회원정보 수정</a></li>
-                          <li><a  href="/user_leave/">회원탈퇴</a></li>
-                          <li><a  href="/past_list/">과거여행 정보</a></li>
-                      </ul>
-                  </li>
+            <ul class="sub">
+              <li><a href="/user_update/">회원정보 수정</a></li>
+              <li><a href="/user_leave/">회원탈퇴</a></li>
+              <li><a href="/past_list/">과거여행 정보</a></li>
+            </ul>
+          </li>
 
-              </ul>
-              <!-- sidebar menu end-->
-          </div>
-      </aside>
-      <!--sidebar end-->
+        </ul>
+        <!-- sidebar menu end-->
+      </div>
+    </aside>
+    <!--sidebar end-->
 
-      <!-- **********************************************************************************************************************************************************
+    <!-- **********************************************************************************************************************************************************
       MAIN CONTENT
       *********************************************************************************************************************************************************** -->
-      <!--main content start-->
-      <section id="main-content">
-          <section class="wrapper site-min-height">
-    <table class="table" cellspacing=0 cellpadding=5 border=1 width=500>
-      <tr>
-        <td colspan="2"><b>제목 : </b> {{ boardData.subject }} </td>
-      </tr>
-      <tr>
-        <td><b>이름 : </b> {{ boardData.name }}</td>
-        <td><b style="pull-right">조회수 :</b> {{ boardData.hits }} </td>
-      </tr>
-      <tr>
-        <td colspan="2" height=100><b>내용 : </b> <br> {{ boardData.memo }} </td>
-      </tr>
-    </table>
+    <!--main content start-->
+    <section id="main-content">
+      <section class="wrapper site-min-height">
+        <table class="table" cellspacing=0 cellpadding=5 border=1 width=500>
+          <tr>
+            <td colspan="2"><b>제목 : </b> {{ boardData.subject }} </td>
+          </tr>
+          <tr>
+            <td><b>이름 : </b> {{ boardData.name }}</td>
+            <td><b style="pull-right">조회수 :</b> {{ boardData.hits }} </td>
+          </tr>
+          <tr>
+            <td colspan="2" height=100><b>내용 : </b> <br> {{ boardData.memo }} </td>
+          </tr>
+        </table>
 
-    <table cellspacing=0 cellpadding=0 border=0 width=500>
-      <tr>
-        <td>
-          <button type="button" class="btn btn-default btn-sm" OnClick="javascript:boardmodify()">수정</button>
+
+        <hr>
+        <strong>댓글</strong>
+
+
+        <form class="form-horizontal" name="writeform" action="addComment" method="post">
+          <div style="inline-flex" class="">
+            <p>{{user.username}}</p>
+            <input type="hidden" name=memo_id value={{memo_id}}>
+            <input type="hidden" name=current_page value={{current_page}}>
+            <input style="width:50%" name=comm class="form-control" placeholder="댓글을 적어주세요">
+          </div>
+          {% csrf_token %}
+          <button type="submit" class="btn btn-default btn-sm" OnClick="javascript:writeCheck()">추가</button>
+        </form>
+
+
+        {% if commentData %}
+        <ul>
+          {% for commentRow in commentData %}
+            <p>{{commentRow.id}} , {{commentRow.cname}} </p>
+            <p> {{commentRow.comm}}</p>
+          {% endfor %}
+        </ul>
+          <p>Yes Data.</p>
+        {% else %}
+          <p>No Data.</p>
+        {% endif %}
+
+        <div class="btn-group">
+          <button type="button" id="modi" class="btn btn-default btn-sm" OnClick="javascript:boardmodify()">수정</button>
+          <button type="button" id="del" class="btn btn-default btn-sm" OnClick="javascript:boarddelete()">삭제</button>
           <button type="button" class="btn btn-default btn-sm" OnClick="javascript:boardlist()">목록</button>
-          <button type="button" class="btn btn-default btn-sm" OnClick="javascript:boarddelete()">삭제</button>
+        </div>
 
-        </td>
-      </tr>
-    </table>
+      </section>
+      <! --/wrapper -->
+    </section>
+    <!-- /MAIN CONTENT -->
 
-		</section><! --/wrapper -->
-      </section><!-- /MAIN CONTENT -->
+    <!--main content end-->
 
-      <!--main content end-->
-
-      <!--footer start-->
-      <footer class="site-footer">
-          <div class="text-center">
-              &copy; 2018 DNA
-              <a href="writeBoard.html#" class="go-top">
+    <!--footer start-->
+    <footer class="site-footer">
+      <div class="text-center">
+        &copy; 2018 DNA
+        <a href="writeBoard.html#" class="go-top">
                   <i class="fa fa-angle-up"></i>
               </a>
-          </div>
-      </footer>
-      <!--footer end-->
+      </div>
+    </footer>
+    <!--footer end-->
   </section>
 
-    <!-- js placed at the end of the document so the pages load faster -->
-    <script src="{% static '/js/jquery.js' %}"></script>
-    <script src="{% static '/js/jquery-1.8.3.min.js' %}"></script>
-    <script src="{% static '/js/bootstrap.min.js' %}"></script>
-    <script class="include" type="text/javascript" src="{% static '/js/jquery.dcjqaccordion.2.7.js' %}"></script>
-    <script src="{% static '/js/jquery.scrollTo.min.js' %}"></script>
-    <script src="{% static '/js/jquery.sparkline.js' %}"></script>
+  <!-- js placed at the end of the document so the pages load faster -->
+  <script src="{% static '/js/jquery.js' %}"></script>
+  <script src="{% static '/js/jquery-1.8.3.min.js' %}"></script>
+  <script src="{% static '/js/bootstrap.min.js' %}"></script>
+  <script class="include" type="text/javascript" src="{% static '/js/jquery.dcjqaccordion.2.7.js' %}"></script>
+  <script src="{% static '/js/jquery.scrollTo.min.js' %}"></script>
+  <script src="{% static '/js/jquery.sparkline.js' %}"></script>
 
 
-    <!--common script for all pages-->
+  <!--common script for all pages-->
 
-    <script type="text/javascript" src="{% static '/js/gritter/js/jquery.gritter.js' %}"></script>
-    <script type="text/javascript" src="{% static '/js/gritter-conf.js' %}"></script>
+  <script type="text/javascript" src="{% static '/js/gritter/js/jquery.gritter.js' %}"></script>
+  <script type="text/javascript" src="{% static '/js/gritter-conf.js' %}"></script>
 
-    <!--script for this page-->
-    <script src="{% static '/js/sparkline-chart.js' %}"></script>
-	<script src="{% static '/js/zabuto_calendar.js' %}"></script>
-
-
+  <!--script for this page-->
+  <script type="text/javascript">
+  </script>
 
 
 
-  </body>
+
+</body>
+
 </html>
