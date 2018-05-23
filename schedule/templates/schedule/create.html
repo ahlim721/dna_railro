@@ -147,6 +147,11 @@
                      <button class="btn btn-default" onclick="selectLoc()">선택</button>
                     </div>
                 </p>
+                <p>
+                  <div style="height:3%;width:100%;display: inline-flex" id="timeTable" class="form-control">
+                    시간을 선택하세요
+                  </div>
+                </p>
                 <div class="btn-group pull-right">
     						  <!--<button type="button" class="btn btn-default ">Previous</button>-->
     						  <button type="submit" class="btn btn-default " onclick="writeCheck()">Next</button>
@@ -204,8 +209,10 @@
   });
 
   var place_list = $("#place_list"),
-      sche_list = $("#sche_list");
+      sche_list = $("#sche_list"),
+      timeTable = $("#timeTable");
   var start_loc, end_loc = "{{en_l.loc_key}}"
+  var leg_num = 0;
   if(!$("#place_list option:selected").val()) start_loc = "{{st_l.loc_key}}"
 
   function findThema(button_key) {
@@ -234,20 +241,28 @@
       $("#place_list").focus();
       return;
     }
-    /*
     var tmp_start = start_loc, tmp_end = $("#place_list option:selected").attr('id');
     console.log(tmp_start, tmp_end, {{sche.travel_num}})
     $.ajax({
       type : "GET",
-      url : "findRoute?tnum="+{{sche.travel_num}}+"&start_loc="+tmp_start+"&end_loc="+tmp_end,
+      url : "findRoute?lnum="+leg_num+"&start_loc="+tmp_start+"&end_loc="+tmp_end,
       dataType : "json",
       success : function(data) {
-
-      }
+        console.log(data)
+        var datalist = '';
+        for(var i=1; i<data.length; i++) {
+          datalist += '<div>'
+          for(var j=0; j<data[i].length; j++) {
+            datalist += data[i][j]['start_st'] + '&nbsp;->&nbsp;' + data[i][j]['end_st'] + '<br>'
+          }
+          datalist += '</div>'
+        }
+        timeTable.html(datalist)
+      },
       error : function() {
         console.log("findRoute : 통신실패")
       }
-    })*/
+    })
     var j = $("#place_list option:selected").val();
     var datalist = '' + $("#sche_list").text() + '&nbsp;->&nbsp;' + j;
     start_loc = tmp_end;

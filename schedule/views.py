@@ -163,20 +163,22 @@ def findRoute(request):
     start_loc = Location_weight.objects.get(loc_key = request.GET['start_loc'])
     end_loc = Location_weight.objects.get(loc_key = request.GET['end_loc'])
 
-    url = "https://maps.googleapis.com/maps/api/directions/json?origin="+quote(start_loc.location)+"&destination="+quote(start_loc.location)+"&key=AIzaSyCx5i4WHK3_vn23BDHnaNqhc9bxMP2A83M&mode=transit&transit_mode=rail"
+    url = "https://maps.googleapis.com/maps/api/directions/json?origin="+quote(start_loc.location)+"&destination="+quote(end_loc.location)+"&key=AIzaSyCx5i4WHK3_vn23BDHnaNqhc9bxMP2A83M&mode=transit&transit_mode=rail&language=ko"
     request = urllib.request.Request(url)
     response = urllib.request.urlopen(request)
     route = ast.literal_eval(response.read().decode('utf-8'))
 
-    leg = route['routes'][0]['legs']
+    leg = route["routes"][0]["legs"]
 
-    steps = []
+    legs = [0]
     for i in leg:
+        steps = []
         for j in i["steps"]:
             if("transit_details" in j):
                 tmp = {}
                 tmp["start_st"] = j["transit_details"]["departure_stop"]["name"]
                 tmp["end_st"] = j["transit_details"]["arrival_stop"]["name"]
                 steps.append(tmp)
+        legs.append(steps)
 
-    return HttpResponse(json.dumps(result), content_type="application/json")
+    return HttpResponse(json.dumps(legs), content_type="application/json")
