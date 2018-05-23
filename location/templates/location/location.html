@@ -45,7 +45,7 @@
             <!--logo end-->
             <div class="top-menu">
             	<ul class="nav pull-right top-menu">
-                    <li><a class="logout" href="login">Logout</a></li>
+                    <li><a class="logout" href="/login">Logout</a></li>
             	</ul>
             </div>
         </header>
@@ -93,9 +93,9 @@
                           <span>마이페이지</span>
                       </a>
                       <ul class="sub">
-                          <li><a  href="user_update">회원정보 수정</a></li>
-                          <li><a  href="user_leave">회원탈퇴</a></li>
-                          <li><a  href="past_list">과거여행 정보</a></li>
+                          <li><a  href="/user_update">회원정보 수정</a></li>
+                          <li><a  href="/user_leave">회원탈퇴</a></li>
+                          <li><a  href="/past_list">과거여행 정보</a></li>
                       </ul>
                   </li>
 
@@ -118,6 +118,8 @@
               <button type="button" class="btn btn-default ">더보기</button>
             </div>
             <br>
+
+
             <div class="row mt">
     					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 desc">
     						<div class="project-wrapper">
@@ -125,8 +127,8 @@
     		                        <div class="photo-wrapper">
     		                            <div class="photo">
                                       <i class="fa fa-plus pull-right" data-toggle="modal" data-target="#myModal"></i>
-                                      <img class="img-responsive" src="{% static '/img/city/1.jpg' %}" alt="">
-
+                                      <img class="img-responsive" src="{% static '/img/city/1.jpg' %}" alt=""  style="display:block;">
+                                      
     		                            </div>
     		                            <div class="overlay"></div>
     		                        </div>
