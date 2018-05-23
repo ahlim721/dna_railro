@@ -39,7 +39,7 @@ class Travel_info(models.Model):
         'schedule.Location_weight',
         related_name = "end_location",
     )
-    Travel_list = models.CharField(max_length=100, default = '', null=True)
+    Travel_list = models.TextField(default="")
     is_done = models.BooleanField(default = False)
 
     def __str__(self):

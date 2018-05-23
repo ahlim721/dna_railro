@@ -9,6 +9,8 @@ from django.http import HttpResponseRedirect
 from django.db.models import Q
 import math
 import ast
+import urllib.request
+from urllib.parse import quote
 
 # Create your views here.
 # 각 지역간의 거리를 dictionary 형식으로 Location_dist 테이블에 저장.
@@ -40,11 +42,44 @@ def cal_Dist(lat1, lon1, lat2, lon2):
 
     return int(R * c)
 '''
+'''
+def make_TimeTable():
+    i = Station_info.objects.get(station = '희방사역')
+    timeTable = {}
+    for j in Station_info.objects.all():
+        if i==j:
+            continue
+        url = "https://api.odsay.com/v1/api/trainServiceTime?lang=0&startStationID="+str(int(i.stationID))+"&endStationID="+str(int(j.stationID))+"&apiKey=WcSrakZHikdXHeqm/pUetMaMRiS1iVq%2blMWrWeSG0Q8"
+        request = urllib.request.Request(url)
+        response = urllib.request.urlopen(request)
+        tmp = ast.literal_eval(response.read().decode('utf-8'))
+        if not tmp:
+            continue;
+        else:
+            timeTable[j.station] = str(tmp['result'])
+    i.timeTable = timeTable
+    i.save()
+'''
+'''
+def get_stationID():
+    for i in Station_info.objects.all():
+        sta = i.station[:len(i.station)-1]
+        url = "https://api.odsay.com/v1/api/searchStation?lang=0&stationName="+quote(sta)+"&stationClass=3&apiKey=WcSrakZHikdXHeqm/pUetMaMRiS1iVq%2blMWrWeSG0Q8"
+        request = urllib.request.Request(url)
+        response = urllib.request.urlopen(request)
+        ID = ast.literal_eval(response.read().decode('utf-8'))['result']['station'][0]['stationID']
+        i.stationID = ID
+        i.save()
+'''
 
 def schedule(request):
     # state_list = State_info.objects.all()
     # 초기에 각 지역간의 거리를 테이블로 저장하기 위해 함수를 실행시킨 후 주석 처리함.
     '''make_Dist_List()'''
+    # 초기에 api 사용을 위하여 각 기차역의 고유 번호인 stationID를 받아 저장한 후 주석 처리함.
+    '''get_stationID()'''
+    # 초기에 api를 활용하여 각 기차역에서의 시간표를 저장하도록 한다.
+    '''make_TimeTable()'''
     return render(request, 'schedule/schedule.html', {'state_list' : state_li()})
 
 def test_api(request):
@@ -121,4 +156,27 @@ def findThema(request):
         result.append([
             pk.loc_key, i
         ])
+    return HttpResponse(json.dumps(result), content_type="application/json")
+
+def findRoute(request):
+    lnum = request.GET['lnum']
+    start_loc = Location_weight.objects.get(loc_key = request.GET['start_loc'])
+    end_loc = Location_weight.objects.get(loc_key = request.GET['end_loc'])
+
+    url = "https://maps.googleapis.com/maps/api/directions/json?origin="+quote(start_loc.location)+"&destination="+quote(start_loc.location)+"&key=AIzaSyCx5i4WHK3_vn23BDHnaNqhc9bxMP2A83M&mode=transit&transit_mode=rail"
+    request = urllib.request.Request(url)
+    response = urllib.request.urlopen(request)
+    route = ast.literal_eval(response.read().decode('utf-8'))
+
+    leg = route['routes'][0]['legs']
+
+    steps = []
+    for i in leg:
+        for j in i["steps"]:
+            if("transit_details" in j):
+                tmp = {}
+                tmp["start_st"] = j["transit_details"]["departure_stop"]["name"]
+                tmp["end_st"] = j["transit_details"]["arrival_stop"]["name"]
+                steps.append(tmp)
+
     return HttpResponse(json.dumps(result), content_type="application/json")

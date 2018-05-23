@@ -7,4 +7,5 @@ urlpatterns = [
     url(r'^create/(\d+)', views.create, name="create"),
     url(r'^doschedule', views.doschedule, name="doschedule"),
     url(r'^create/findThema?', views.findThema, name="findThema"),
+    url(r'^create/findRoute?', views.findRoute, name="findRoute"),
 ]

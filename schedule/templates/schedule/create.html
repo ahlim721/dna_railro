@@ -234,9 +234,23 @@
       $("#place_list").focus();
       return;
     }
+    /*
+    var tmp_start = start_loc, tmp_end = $("#place_list option:selected").attr('id');
+    console.log(tmp_start, tmp_end, {{sche.travel_num}})
+    $.ajax({
+      type : "GET",
+      url : "findRoute?tnum="+{{sche.travel_num}}+"&start_loc="+tmp_start+"&end_loc="+tmp_end,
+      dataType : "json",
+      success : function(data) {
+
+      }
+      error : function() {
+        console.log("findRoute : 통신실패")
+      }
+    })*/
     var j = $("#place_list option:selected").val();
     var datalist = '' + $("#sche_list").text() + '&nbsp;->&nbsp;' + j;
-    start_loc = $("#place_list option:selected").attr('id');
+    start_loc = tmp_end;
     sche_list.html(datalist)
   }
         function myNavFunction(id) {

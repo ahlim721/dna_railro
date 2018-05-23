@@ -54,6 +54,8 @@ class Station_info(models.Model):
     N = models.BooleanField(default = False)
     Com = models.BooleanField(default = False)
     Tour = models.BooleanField(default = False)
+    timeTable = models.TextField(default = "")
+    stationID = models.FloatField(default = 0)
 
     def __str__(self):
         return self.station
