@@ -29,31 +29,6 @@
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-
-    <meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
-
-    <script language="javascript">
-      function writeCheck() {
-          var form = document.writeform;
-          /*if (!form.name.value)
-          {
-              alert("이름을 적어주세요");
-              form.name.focus();
-              return;
-          }*/
-          if (!form.subject.value) {
-              alert("제목을 적어주세요");
-              form.subject.focus();
-              return;
-          }
-          if (!form.memo.value) {
-              alert("내용을 적어주세요");
-              form.memo.focus();
-              return;
-          }
-          form.submit();
-      }
-  </script>
   </head>
 
   <body>
@@ -72,7 +47,7 @@
             <!--logo end-->
             <div class="top-menu">
             	<ul class="nav pull-right top-menu">
-                    <li><a class="logout" href="login.html">Logout</a></li>
+                    <li><a class="logout" href="/login">Logout</a></li>
             	</ul>
             </div>
         </header>
@@ -109,20 +84,21 @@
                   </li>
 
                   <li class="sub-menu">
-                      <a class="active" href="/community">
+                      <a href="/community">
                           <i class="fa fa-pencil"></i>
                           <span>커뮤니티</span>
                       </a>
                   </li>
                   <li class="sub-menu">
-                      <a href="javascript:;">
+                      <a class="active" href="javascript:;">
                           <i class="fa fa-user"></i>
                           <span>마이페이지</span>
                       </a>
                       <ul class="sub">
-                          <li><a  href="/user_update">회원정보 수정</a></li>
-                          <li><a  href="/user_leave">회원탈퇴</a></li>
-                          <li><a  href="/past_list">과거여행 정보</a></li>
+                          <!-- TODO 링크 연결하기-->
+                          <li class="active" ><a   href="user_update">회원정보 수정</a></li>
+                          <li><a  href="user_leave">회원탈퇴</a></li>
+                          <li><a  href="past_list">과거여행 정보</a></li>
                       </ul>
                   </li>
 
@@ -137,37 +113,10 @@
       *********************************************************************************************************************************************************** -->
       <!--main content start-->
       <section id="main-content">
-      <section class="wrapper site-min-height">
 
-        <div class="container-fluid">
-          <form class="form-horizontal" name=writeform method=post action="DoWriteBoard">
-            <div class="form-group">
-              <label  class="col-sm-2 control-label">이름</label>
-              <div class="col-sm-10">
-                <label>{{user.username}}</label>
-              </div>
-            </div>
-            <div class="form-group">
-              <label  class="col-sm-2 control-label">제목</label>
-              <div class="col-sm-10">
-                <input name=subject class="form-control" placeholder="제목을 적어주세요">
-              </div>
-            </div>
-            <div class="form-group">
-              <label  class="col-sm-2 control-label">내용</label>
-              <div class="col-sm-10">
-                <textarea name=memo cols=50 rows=10 class="form-control" placeholder="내용을 적어주세요"></textarea>
-              </div>
-            </div>
-            {% csrf_token %}
-          </form>
+        <section class="wrapper site-min-height">
 
-
-          <div class="btn-group pull-right">
-            <button type="button" class="btn btn-default btn-sm" OnClick="javascript:writeCheck()">등록</button>
-          </div>
-
-        </div>
+          <strong>Hello</strong>
 		</section><! --/wrapper -->
       </section><!-- /MAIN CONTENT -->
 
@@ -177,7 +126,7 @@
       <footer class="site-footer">
           <div class="text-center">
               &copy; 2018 DNA
-              <a href="writeBoard.html#" class="go-top">
+              <a href="user_update#" class="go-top">
                   <i class="fa fa-angle-up"></i>
               </a>
           </div>
@@ -195,8 +144,8 @@
 
 
     <!--common script for all pages-->
-    <script src="{% static 'js/common-scripts.js' %}"></script>
-    
+    <script src="{% static '/js/common-scripts.js' %}"></script>
+
     <script type="text/javascript" src="{% static '/js/gritter/js/jquery.gritter.js' %}"></script>
     <script type="text/javascript" src="{% static '/js/gritter-conf.js' %}"></script>
 
