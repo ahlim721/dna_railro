@@ -259,6 +259,7 @@
 
 
     <!--common script for all pages-->
+    <script src="{% static 'js/common-scripts.js' %}"></script>
 
     <script type="text/javascript" src="{% static 'js/gritter/js/jquery.gritter.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/gritter-conf.js' %}"></script>
@@ -268,11 +269,12 @@
   <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
     <script type='text/javascript' src='https://code.jquery.com/jquery-1.8.3.js'></script>
 
-    <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script>
+    <script type='application/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script>
   <script src="{% static 'js/bootstrap-datepicker.kr.js' %}" charset="UTF-8"></script>
 
 
-	<script type="application/javascript">
+
+  <script type="application/javascript">
 
   $(function(){
       $('.input-group.date').datepicker({
@@ -283,6 +285,7 @@
           language: "kr"
       });
   });
+
 
   var src_locList = $("#src_locList"),
       des_locList = $("#des_locList");

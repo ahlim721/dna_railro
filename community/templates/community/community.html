@@ -66,7 +66,7 @@
                   {% if user.is_authenticated %}
                     <h5 class="centered">{{user.username}}</h5>
                   {% else %}
-                    <h5 class="centered">로그인 해주세요.</h5>
+                    <h5 class="centered" href="/login">로그인 해주세요.</h5>
                   {% endif %}
 
                   <li class="mt">
@@ -205,6 +205,7 @@
 
 
     <!--common script for all pages-->
+    <script src="{% static 'js/common-scripts.js' %}"></script>
 
     <script type="text/javascript" src="{% static '/js/gritter/js/jquery.gritter.js' %}"></script>
     <script type="text/javascript" src="{% static '/js/gritter-conf.js' %}"></script>
