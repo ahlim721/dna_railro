@@ -147,10 +147,11 @@
                      <button class="btn btn-default" onclick="selectLoc()">선택</button>
                     </div>
                 </p>
-                <p>
-                  <div style="height:3%;width:100%;display: inline-flex" id="timeTable" class="form-control">
-                    시간을 선택하세요
-                  </div>
+                <p> <div style="height:3%;width:100%;display: inline-flex" class="form-control">
+                    시간을 선택하세요 &nbsp;
+                    <select name="recommend_place" id="timeTable" multiple class="form-control" style="width:20%">
+                    </select>
+                   </div>
                 </p>
                 <div class="btn-group pull-right">
     						  <!--<button type="button" class="btn btn-default ">Previous</button>-->
@@ -245,19 +246,17 @@
     console.log(tmp_start, tmp_end, {{sche.travel_num}})
     $.ajax({
       type : "GET",
-      url : "findRoute?lnum="+leg_num+"&start_loc="+tmp_start+"&end_loc="+tmp_end,
+      url : "findRoute?tnum="+{{sche.travel_num}}+"&lnum="+leg_num+"&start_loc="+tmp_start+"&end_loc="+tmp_end,
       dataType : "json",
       success : function(data) {
         console.log(data)
-        var datalist = '';
+        /*var datalist = '';
         for(var i=1; i<data.length; i++) {
-          datalist += '<div>'
           for(var j=0; j<data[i].length; j++) {
-            datalist += data[i][j]['start_st'] + '&nbsp;->&nbsp;' + data[i][j]['end_st'] + '<br>'
+            datalist += '<option>' + data[i][j]['start_st'] + '&nbsp;->&nbsp;' + data[i][j]['end_st'] + '</option>'
           }
-          datalist += '</div>'
         }
-        timeTable.html(datalist)
+        timeTable.html(datalist)*/
       },
       error : function() {
         console.log("findRoute : 통신실패")

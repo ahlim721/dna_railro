@@ -71,7 +71,6 @@ def get_stationID():
         i.stationID = ID
         i.save()
 '''
-
 def schedule(request):
     # state_list = State_info.objects.all()
     # 초기에 각 지역간의 거리를 테이블로 저장하기 위해 함수를 실행시킨 후 주석 처리함.
@@ -149,7 +148,7 @@ def findThema(request):
     close_list = close_list[:num_of_list]
 
     # 선택한 테마에 대해 내림차순으로 정렬 후, 5개로 자른다.
-    Loc_list = list(set(pop_list)&set(thema_list)&set(close_list))
+    Loc_list = list(set(pop_list)&set(thema_list)&set(close_list))[:5]
 
     for i in Loc_list :
         pk = Location_weight.objects.get(location = i)
@@ -158,27 +157,75 @@ def findThema(request):
         ])
     return HttpResponse(json.dumps(result), content_type="application/json")
 
+def getTimeTable(start_st, end_st, railType):
+    info = Station_info.objects.get(station = start_st)
+    TT = ast.literal_eval(info.timeTable)
+    sToe = ast.literal_eval(TT[end_st])
+    timeTable=[]
+    for i in sToe['station']:
+        if railType is 'general':
+            if "KTX" in i['trainClass']:
+                continue
+            if "SRT" in i['trainClass']:
+                continue
+        tmp = {}
+        tmp['departureTime'] = int(i['departureTime'].replace(":",""))
+        tmp['arrivalTime'] = int(i['arrivalTime'].replace(":",""))
+        tmp['trainClass'] = i['trainClass']
+        timeTable.append(tmp)
+    return timeTable
+
+def determine(arrivaltime, arrival_table):
+    for i in arrival_table:
+        if arrivaltime < i['departureTime']:
+            return i
+    return False
+
 def findRoute(request):
+    tnum = Travel_info.objects.get(travel_num = request.GET['tnum'])
     lnum = request.GET['lnum']
     start_loc = Location_weight.objects.get(loc_key = request.GET['start_loc'])
     end_loc = Location_weight.objects.get(loc_key = request.GET['end_loc'])
 
-    url = "https://maps.googleapis.com/maps/api/directions/json?origin="+quote(start_loc.location)+"&destination="+quote(end_loc.location)+"&key=AIzaSyCx5i4WHK3_vn23BDHnaNqhc9bxMP2A83M&mode=transit&transit_mode=rail&language=ko"
+    url = "https://maps.googleapis.com/maps/api/directions/json?origin="+quote(start_loc.location)+quote('역')+"&destination="+quote(end_loc.location)+quote('역')+"&key=AIzaSyCx5i4WHK3_vn23BDHnaNqhc9bxMP2A83M&mode=transit&transit_mode=rail&language=ko"
     request = urllib.request.Request(url)
     response = urllib.request.urlopen(request)
     route = ast.literal_eval(response.read().decode('utf-8'))
 
     leg = route["routes"][0]["legs"]
 
-    legs = [0]
+    legs = [lnum]
     for i in leg:
+        getsteps = {}
         steps = []
+        time = []
         for j in i["steps"]:
             if("transit_details" in j):
                 tmp = {}
                 tmp["start_st"] = j["transit_details"]["departure_stop"]["name"]
+                if tmp["start_st"] == '천안아산역 (온양온천)':
+                    tmp["start_st"] == '천안아산역'
                 tmp["end_st"] = j["transit_details"]["arrival_stop"]["name"]
+                tmp["time_table"] = sorted(getTimeTable(tmp["start_st"],tmp["end_st"],tnum.railro_type), key=lambda k: k['arrivalTime'])
                 steps.append(tmp)
-        legs.append(steps)
+        for j in steps[0]["time_table"]:
+            start = j['arrivalTime']
+            flag = True
+            li = [j]
+            for l in range(len(steps)):
+                if l == 0:
+                    continue
+                tmp = determine(start, steps[l]['time_table'])
+                if not tmp:
+                    flag = False
+                    break
+                li.append(tmp)
+                start = tmp['arrivalTime']
+            if not flag:
+                break
+            time.append(li)
+        getsteps['steps'] = steps
+        getsteps['time'] = time
+        legs.append(getsteps)
 
     return HttpResponse(json.dumps(legs), content_type="application/json")
