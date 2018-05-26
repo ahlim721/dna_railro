@@ -43,10 +43,10 @@
 
     // user_name과 memo_name이 다르면 수정과 삭제를 할수없도록
     $(document).ready(function() {
-      if (u1 != u2)
+      if (u1 != u2) {
         $("#modi").hide();
         $("#del").hide();
-
+      }
     });
     //if (u1 != u2)
     //  t.css("display", "none")
@@ -161,53 +161,61 @@
     <!--main content start-->
     <section id="main-content">
       <section class="wrapper site-min-height">
-        <table class="table" cellspacing=0 cellpadding=5 border=1 width=500>
-          <tr>
-            <td colspan="2"><b>제목 : </b> {{ boardData.subject }} </td>
-          </tr>
-          <tr>
-            <td><b>이름 : </b> {{ boardData.name }}</td>
-            <td><b style="pull-right">조회수 :</b> {{ boardData.hits }} </td>
-          </tr>
-          <tr>
-            <td colspan="2" height=100><b>내용 : </b> <br> {{ boardData.memo }} </td>
-          </tr>
-        </table>
+        <div class="content-fluid">
+          <div class="" style="padding-top:50px;">
+            <table class="table table-bordered" width=90% cellspacing=0 cellpadding=5 border=1 width=500>
+              <tr>
+                <td colspan="2"><b>제목 : </b> {{ boardData.subject }} </td>
+              </tr>
+              <tr>
+                <td><b>이름 : </b> {{ boardData.name }}</td>
+                <td><b style="pull-right">조회수 :</b> {{ boardData.hits }} </td>
+              </tr>
+              <tr>
+                <td colspan="2" height=100><b>내용 : </b> <br> {{ boardData.memo }} </td>
+              </tr>
+            </table>
 
-
-        <hr>
-        <strong>댓글</strong>
-
-
-        <form class="form-horizontal" name="writeform" action="addComment" method="post">
-          <div style="inline-flex" class="">
-            <p>{{user.username}}</p>
-            <input type="hidden" name=memo_id value={{memo_id}}>
-            <input type="hidden" name=current_page value={{current_page}}>
-            <input style="width:50%" name=comm class="form-control" placeholder="댓글을 적어주세요">
           </div>
-          {% csrf_token %}
-          <button type="submit" class="btn btn-default btn-sm" OnClick="javascript:writeCheck()">추가</button>
-        </form>
+          <div class="btn-group">
+            <button type="button" id="modi" class="btn btn-default btn-sm" OnClick="javascript:boardmodify()">수정</button>
+            <button type="button" id="del" class="btn btn-default btn-sm" OnClick="javascript:boarddelete()">삭제</button>
+            <button type="button" class="btn btn-default btn-sm " OnClick="javascript:boardlist()">목록</button>
+          </div>
 
 
-        {% if commentData %}
-        <ul>
-          {% for commentRow in commentData %}
-            <p>{{commentRow.id}} , {{commentRow.cname}} </p>
-            <p> {{commentRow.comm}}</p>
-          {% endfor %}
-        </ul>
-          <p>Yes Data.</p>
-        {% else %}
-          <p>No Data.</p>
-        {% endif %}
+          <hr>
+          <div class="" style="padding-top:10px">
+            <strong>댓글</strong>
 
-        <div class="btn-group">
-          <button type="button" id="modi" class="btn btn-default btn-sm" OnClick="javascript:boardmodify()">수정</button>
-          <button type="button" id="del" class="btn btn-default btn-sm" OnClick="javascript:boarddelete()">삭제</button>
-          <button type="button" class="btn btn-default btn-sm" OnClick="javascript:boardlist()">목록</button>
-        </div>
+
+            <form class="form-inline" name="writeform" action="addComment" method="post">
+              <div style="inline-flex" class="">
+                <!--<p>{{user.username}}</p>-->
+                <br>
+                <input type="hidden" name=memo_id value={{memo_id}}>
+                <input type="hidden" name=current_page value={{current_page}}>
+                <span class="inlineinput"><input style="width:90%" name=comm class="form-control" placeholder="댓글을 적어주세요"></span>
+                <span class="inlineinput"><button type="submit" class="btn btn-default btn-sm" OnClick="javascript:writeCheck()">추가</button></span>
+              {% csrf_token %}
+              </div>
+            </form>
+
+
+            <p><div style="width:95%;height:3%;display" class="form-control">
+              {% if commentData %}
+
+                {% for commentRow in commentData %}
+                  <p> {{commentRow.cname}} : {{commentRow.comm}} </p>
+                {% endfor %}
+
+              {% else %}
+                <p>댓글이 없습니다.</p>
+              {% endif %}
+            </div></p>
+          </div>
+
+          </div>
 
       </section>
       <! --/wrapper -->
@@ -239,7 +247,7 @@
 
   <!--common script for all pages-->
   <script src="{% static 'js/common-scripts.js' %}"></script>
-  
+
   <script type="text/javascript" src="{% static '/js/gritter/js/jquery.gritter.js' %}"></script>
   <script type="text/javascript" src="{% static '/js/gritter-conf.js' %}"></script>
 

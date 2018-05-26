@@ -37,4 +37,8 @@ def location(request):
     i = Location_info.objects.get(id=1)
     rec = i.recommend_place
     hello = ast.literal_eval(rec)
-    return render(request, 'location/location.html', {"hello" : json.dumps(hello)})
+    loc = Location_weight.objects.all()
+    loc_name = []
+    for i in loc:
+        loc_name.append(i.location)
+    return render(request, 'location/location.html', {"hello" : hello, "loc_name" : loc_name})

@@ -93,9 +93,9 @@
                           <span>마이페이지</span>
                       </a>
                       <ul class="sub">
-                          <li><a  href="/user_update">회원정보 수정</a></li>
-                          <li><a  href="/user_leave">회원탈퇴</a></li>
-                          <li><a  href="/past_list">과거여행 정보</a></li>
+                          <li><a  href="/mypage/user_update">회원정보 수정</a></li>
+                          <li><a  href="/mypage/user_leave">회원탈퇴</a></li>
+                          <li><a  href="/mypage/past_list">과거여행 정보</a></li>
                       </ul>
                   </li>
 
@@ -109,6 +109,7 @@
       MAIN CONTENT
       *********************************************************************************************************************************************************** -->
       <!--main content start-->
+
       <section id="main-content">
           <section class="wrapper site-min-height">
 
@@ -119,96 +120,8 @@
             </div>
             <br>
 
-
-
-            <div class="row mt">
-    					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 desc">
-    						<div class="project-wrapper">
-    		                    <div class="project">
-    		                        <div class="photo-wrapper">
-    		                            <div class="photo">
-                                      <i class="fa fa-plus pull-right" data-toggle="modal" data-target="#myModal"></i>
-                                      <img class="img-responsive" src="{% static '/img/city/1.jpg' %}" alt=""  style="display:block;">
-
-    		                            </div>
-    		                            <div class="overlay"></div>
-    		                        </div>
-    		                    </div>
-    		                </div>
-    					</div><!-- col-lg-4 -->
-
-    					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 desc">
-    						<div class="project-wrapper">
-    		                    <div class="project">
-    		                        <div class="photo-wrapper">
-    		                            <div class="photo">
-                                      <i class="fa fa-plus pull-right" data-toggle="modal" data-target="#myModal"></i>
-    		                            	<img class="img-responsive" src="{% static '/img/city/2.jpg' %}" alt="">
-    		                            </div>
-    		                            <div class="overlay"></div>
-    		                        </div>
-    		                    </div>
-    		                </div>
-    					</div><!-- col-lg-4 -->
-
-    					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 desc">
-    						<div class="project-wrapper">
-    		                    <div class="project">
-    		                        <div class="photo-wrapper">
-    		                            <div class="photo">
-                                      <i class="fa fa-plus pull-right" data-toggle="modal" data-target="#myModal"></i>
-    		                            	<img class="img-responsive" src="{% static '/img/city/3.jpg' %}" alt="">
-    		                            </div>
-    		                            <div class="overlay"></div>
-    		                        </div>
-    		                    </div>
-    		                </div>
-    					</div><!-- col-lg-4 -->
-    				</div><!-- /row -->
-
-            <div class="row mt">
-    					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 desc">
-    						<div class="project-wrapper">
-    		                    <div class="project">
-    		                        <div class="photo-wrapper">
-    		                            <div class="photo">
-                                      <i class="fa fa-plus pull-right" data-toggle="modal" data-target="#myModal"></i>
-    		                            	<img class="img-responsive" src="{% static '/img/city/4.jpg' %}" alt="">
-    		                            </div>
-    		                            <div class="overlay"></div>
-    		                        </div>
-    		                    </div>
-    		                </div>
-    					</div><!-- col-lg-4 -->
-
-    					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 desc">
-    						<div class="project-wrapper">
-    		                    <div class="project">
-    		                        <div class="photo-wrapper">
-    		                            <div class="photo">
-                                      <i class="fa fa-plus pull-right" data-toggle="modal" data-target="#myModal"></i>
-    		                            	<img class="img-responsive" src="{% static '/img/city/5.jpg' %}" alt="">
-    		                            </div>
-    		                            <div class="overlay"></div>
-    		                        </div>
-    		                    </div>
-    		                </div>
-    					</div><!-- col-lg-4 -->
-
-    					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 desc">
-    						<div class="project-wrapper">
-    		                    <div class="project">
-    		                        <div class="photo-wrapper">
-    		                            <div class="photo">
-                                      <i class="fa fa-plus pull-right" data-toggle="modal" data-target="#myModal"></i>
-    		                            	<img class="img-responsive" src="{% static '/img/city/6.jpg' %}" alt="">
-    		                            </div>
-    		                            <div class="overlay"></div>
-    		                        </div>
-    		                    </div>
-    		                </div>
-    					</div><!-- col-lg-4 -->
-    				</div><!-- /row -->
+            <div id="place_list">
+            </div>
 
             <!-- Modal -->
             <div class="modal fade" id="myModal" role="dialog">
@@ -258,6 +171,24 @@
     <script src="{% static '/js/jquery.scrollTo.min.js' %}"></script>
     <script src="{% static '/js/jquery.sparkline.js' %}"></script>
 
+    <script type = "application/javascript">
+
+    var place_list = $("#place_list");
+
+    data = {{ hello|safe }}
+    loc = {{ loc_name|safe }}
+    var datalist = '<div class="row mt">';
+    for(i in loc) {
+      datalist += '<div class="col-lg-4 col-sm-4 col-xs desc">'
+      datalist += '<img src=' + data[loc[i]][0]['pic'] + ' width=400px, height=300px>'
+      datalist += '<p><strong>' + '제목 : ' + data[loc[i]][0]['title'] + '</strong></p>'
+      datalist += '<p>' + '지역이름 : ' + loc[i] + '</p>'
+      datalist += '<p>' + '주소 : ' + data[loc[i]][0]['addr'] + '</p>'
+      datalist += '</div>'
+    }
+    datalist += '</div>'
+    place_list.html(datalist)
+    </script>
 
     <!--common script for all pages-->
     <script src="{% static 'js/common-scripts.js' %}"></script>

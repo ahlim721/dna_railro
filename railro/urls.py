@@ -27,6 +27,5 @@ urlpatterns = [
     url(r'^location/', include('location.urls')),
     url(r'^community/', include('community.urls')),
     url(r'^schedule/', include('schedule.urls')),
-    url(r'^user_update/', include('mypage.urls')),
-
+    url(r'^mypage/', include('mypage.urls')),
 ] + static(settings.STATIC_URL, document_root = settings.STATIC_ROOT)

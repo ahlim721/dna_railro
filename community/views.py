@@ -73,7 +73,7 @@ def viewWork(request):
     boardData = Board.objects.get(id=pk)
     #print boardData.memo
 
-    commentData = Comment.objects.all()
+    commentData = Comment.objects.filter(memo_id = pk)
 
 
     # Update DataBase
@@ -95,7 +95,7 @@ def viewForUpdate(request):
     #print 'current_page', current_page
     #print 'searchStr', searchStr
 
-    boardData = Board.objects.get(id)
+    boardData = Board.objects.get(id=memo_id)
 
     return render(request, 'community/viewForUpdate.html', {'memo_id': request.GET['memo_id'],
                                                 'current_page':request.GET['current_page'],

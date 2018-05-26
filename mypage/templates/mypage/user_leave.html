@@ -29,35 +29,6 @@
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-
-    <meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
-
-    <script language="javascript">
-      function writeCheck() {
-          var form = document.modifyform;
-
-          if (!form.subject.value) {
-              alert("제목을 적어주세요");
-              form.subject.focus();
-              return;
-          }
-          if (!form.memo.value) {
-              alert("내용을 적어주세요");
-              form.memo.focus();
-              return;
-          }
-          form.submit();
-      }
-      function boardlist()
-      {
-          var s = "{{searchStr}}";
-
-          if(s=="None")
-              location.href = '/community?current_page={{current_page}}';
-          else
-              location.href = '/listSearchedSpecificPageWork?pageForView={{current_page}}&searchStr={{searchStr}}';
-      }
-  </script>
   </head>
 
   <body>
@@ -72,11 +43,11 @@
                   <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
               </div>
             <!--logo start-->
-            <a href="/index/" class="logo"><b>Rail-ro Free pass</b></a>
+            <a href="/index" class="logo"><b>Rail-ro Free pass</b></a>
             <!--logo end-->
             <div class="top-menu">
             	<ul class="nav pull-right top-menu">
-                    <li><a class="logout" href="login.html">Logout</a></li>
+                    <li><a class="logout" href="/login">Logout</a></li>
             	</ul>
             </div>
         </header>
@@ -95,38 +66,39 @@
                   {% if user.is_authenticated %}
                     <h5 class="centered">{{user.username}}</h5>
                   {% else %}
-                    <h5 class="centered" href="/login">로그인 해주세요.</h5>
+                    <h5 class="centered">로그인 해주세요.</h5>
                   {% endif %}
 
                   <li class="mt">
-                      <a href="/schedule/">
+                      <a href="/schedule">
                           <i class="fa fa-clock-o"></i>
                           <span>스케쥴짜기</span>
                       </a>
                   </li>
 
                   <li class="sub-menu">
-                      <a href="/location/">
+                      <a href="/location">
                           <i class="fa fa-map-marker"></i>
                           <span>장소추천</span>
                       </a>
                   </li>
 
                   <li class="sub-menu">
-                      <a class="active" href="/community/">
+                      <a href="/community">
                           <i class="fa fa-pencil"></i>
                           <span>커뮤니티</span>
                       </a>
                   </li>
                   <li class="sub-menu">
-                      <a href="javascript:;">
+                      <a class="active" href="javascript:;">
                           <i class="fa fa-user"></i>
                           <span>마이페이지</span>
                       </a>
                       <ul class="sub">
-                          <li><a  href="/user_update/">회원정보 수정</a></li>
-                          <li><a  href="/user_leave/">회원탈퇴</a></li>
-                          <li><a  href="/past_list/">과거여행 정보</a></li>
+                          <!-- TODO 링크 연결하기-->
+                          <li class="active" ><a   href="/mypage/user_update">회원정보 수정</a></li>
+                          <li><a  href="/mypage/user_leave">회원탈퇴</a></li>
+                          <li><a  href="/mypage/past_list">과거여행 정보</a></li>
                       </ul>
                   </li>
 
@@ -142,40 +114,19 @@
       <!--main content start-->
       <section id="main-content">
         <section class="wrapper site-min-height">
-            <div class="container-fluid" style="padding-top:30px">
-              <form style="width:80%; margin-left: 20px;"class="form-horizontal" name=modifyform method=post action="updateBoard/"> {% csrf_token %}
-                <input type=hidden name=memo_id  value="{{memo_id}}">
-                <input type=hidden name=current_page  value="{{current_page}} ">
-                <input type=hidden name=searchStr  value="{{searchStr}} ">
-
-                <div class="form-group">
-                  <label  class="col-sm-2 control-label">이름</label>
-                  <div class="col-sm-10">
-                    <label name=name>{{ boardData.name }}</label>
-                    </div>
-                </div>
-                <div class="form-group">
-                  <label  class="col-sm-2 control-label">제목</label>
-                  <div class="col-sm-10">
-                    <input name=subject class="form-control" value="{{ boardData.subject }}">
+          <div id="leave-page">
+            <div class="container">
+                <form method="post" class="form-leave" actio="">
+                  {% csrf_token %}
+                  <div class="leave-warp">
+                    <input type="password" class="form-control" name="password" required="" maxlength="128" id="id_password" placeholder="Password">
+                    <input class="btn btn-theme btn-block" type="submit" value="LEAVE"/>
                   </div>
-                </div>
-                <div class="form-group">
-                  <label  class="col-sm-2 control-label">내용</label>
-                  <div class="col-sm-10">
-                    <textarea name=memo cols=50 rows=10 class="form-control" placeholder="내용">{{ boardData.memo }}</textarea>
-                  </div>
-                </div>
-              </form>
-
-
-              <div class="btn-group pull-right" style="padding-top:20px ;margin-right: 20px;">
-                <button type="button" class="btn btn-default btn-sm" OnClick="javascript:writeCheck()">재등록</button>
-                <button type="button" class="btn btn-default btn-sm" OnClick="javascript:boardlist()">목록</button>
-              </div>
-
+                </form>
             </div>
-		</section><! --/wrapper -->
+          </div>
+
+		</section><!--/wrapper -->
       </section><!-- /MAIN CONTENT -->
 
       <!--main content end-->
@@ -184,7 +135,7 @@
       <footer class="site-footer">
           <div class="text-center">
               &copy; 2018 DNA
-              <a href="writeBoard.html#" class="go-top">
+              <a href="user_update#" class="go-top">
                   <i class="fa fa-angle-up"></i>
               </a>
           </div>
@@ -202,7 +153,7 @@
 
 
     <!--common script for all pages-->
-    <script src="{% static 'js/common-scripts.js' %}"></script>
+    <script src="{% static '/js/common-scripts.js' %}"></script>
 
     <script type="text/javascript" src="{% static '/js/gritter/js/jquery.gritter.js' %}"></script>
     <script type="text/javascript" src="{% static '/js/gritter-conf.js' %}"></script>

@@ -139,8 +139,8 @@
       <section id="main-content">
       <section class="wrapper site-min-height">
 
-        <div class="container-fluid">
-          <form class="form-horizontal" name=writeform method=post action="DoWriteBoard">
+        <div class="container-fluid" style="padding-top:30px">
+          <form style="width:80%; margin-left: 20px;" class="form-horizontal" name=writeform method=post action="DoWriteBoard">
             <div class="form-group">
               <label  class="col-sm-2 control-label">이름</label>
               <div class="col-sm-10">
@@ -163,7 +163,7 @@
           </form>
 
 
-          <div class="btn-group pull-right">
+          <div class="btn-group pull-right" style="padding-top:20px ;margin-right: 20px;">
             <button type="button" class="btn btn-default btn-sm" OnClick="javascript:writeCheck()">등록</button>
           </div>
 
@@ -196,7 +196,7 @@
 
     <!--common script for all pages-->
     <script src="{% static 'js/common-scripts.js' %}"></script>
-    
+
     <script type="text/javascript" src="{% static '/js/gritter/js/jquery.gritter.js' %}"></script>
     <script type="text/javascript" src="{% static '/js/gritter-conf.js' %}"></script>
 
