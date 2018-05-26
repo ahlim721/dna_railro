@@ -1,0 +1,281 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="kor">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Dashboard">
+    <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
+    <title>Rail-ro Free pass</title>
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+    <!--external css-->
+    <link href="{% static 'font-awesome/css/font-awesome.css' %}" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/zabuto_calendar.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'js/gritter/css/jquery.gritter.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'lineicons/style.css' %}">
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style-responsive.css' %}" rel="stylesheet">
+    <script src="{% static 'js/chart-master/Chart.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script>
+    function toggle(list) {
+        var list = $("#"+list+"_list")
+        var display_status = list.css("display")
+
+        if(display_status === "none")
+          list.css("display","inline-flex")
+        else
+          list.css("display","none")
+    };
+    </script>
+  </head>
+  <body>
+  <section id="container" >
+      <!-- **********************************************************************************************************************************************************
+      TOP BAR CONTENT & NOTIFICATIONS
+      *********************************************************************************************************************************************************** -->
+      <!--header start-->
+      <header class="header black-bg">
+              <div class="sidebar-toggle-box">
+                  <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
+              </div>
+            <!--logo start-->
+            <a href="/index" class="logo"><b>Rail-ro Free pass</b></a>
+            <!--logo end-->
+            <div class="top-menu">
+            	<ul class="nav pull-right top-menu">
+                    <li><a class="logout" href="/login">Logout</a></li>
+            	</ul>
+            </div>
+        </header>
+      <!--header end-->
+
+      <!-- **********************************************************************************************************************************************************
+      MAIN SIDEBAR MENU
+      *********************************************************************************************************************************************************** -->
+      <!--sidebar start-->
+      <aside>
+          <div id="sidebar"  class="nav-collapse ">
+              <!-- sidebar menu start-->
+              <ul class="sidebar-menu" id="nav-accordion">
+
+              	  <p class="centered"><img src="{% static 'img/default.jpg' %}" class="img-circle" width="60"></a></p>
+                  {% if user.is_authenticated %}
+                    <h5 class="centered">{{user.username}}</h5>
+                  {% else %}
+                    <h5 class="centered" href="/login">로그인 해주세요.</h5>
+                  {% endif %}
+
+                  <li class="mt">
+                      <a class="active" href="/schedule">
+                          <i class="fa fa-clock-o"></i>
+                          <span>스케쥴짜기</span>
+                      </a>
+                  </li>
+
+                  <li class="sub-menu">
+                      <a href="/location">
+                          <i class="fa fa-map-marker"></i>
+                          <span>장소추천</span>
+                      </a>
+                  </li>
+
+                  <li class="sub-menu">
+                      <a href="/community">
+                          <i class="fa fa-pencil"></i>
+                          <span>커뮤니티</span>
+                      </a>
+                  </li>
+                  <li class="sub-menu">
+                      <a href="javascript:;">
+                          <i class="fa fa-user"></i>
+                          <span>마이페이지</span>
+                      </a>
+                      <ul class="sub">
+                          <!-- TODO 링크 연결하기-->
+                          <li><a  href="/mypage/user_update">회원정보 수정</a></li>
+                          <li><a  href="/mypage/user_leave">회원탈퇴</a></li>
+                          <li><a  href="/mypage/past_list">과거여행 정보</a></li>
+                      </ul>
+                  </li>
+
+              </ul>
+              <!-- sidebar menu end-->
+          </div>
+      </aside>
+      <!--sidebar end-->
+
+      <!-- **********************************************************************************************************************************************************
+      MAIN CONTENT
+      *********************************************************************************************************************************************************** -->
+      <!--main content start-->
+      <section id="main-content">
+          <section class="wrapper site-min-height">
+            <div class="row mt">
+              <div class="col-lg-12">
+                <p> <div style="width:100%;display: inline-flex" class="form-control">
+                      이름 : {{ sche.identifier }} <hr>
+                      내일로유형 : {{ sche.railro_type }} <hr>
+                      내일로일권 : {{ sche.railro_day }} <hr>
+                      출발지 : {{ sche.start_loc }} <hr>
+                      도착지 : {{ sche.end_loc }} <hr>
+                      출발날짜 : {{ sche.start_date }} <hr>
+                      도착날짜 : {{ sche.end_date }} <hr>
+                    </div>
+                </p>
+                <p> <div style="width:100%;display: inline-flex" id="sche_list" class="form-control">{{sche.start_loc}}</div></p>
+                <p> <div style="height:3%;width:100%;display: inline-flex" class="form-control">
+                    테마를 선택하세요 &nbsp;
+                      <select multiple class="form-control" style="width:20%"name="railro_thema" >
+                        <option id="eat" onclick="findThema('eat')">맛집</option>
+                        <option id="picture" onclick="findThema('picture')">인생샷</option>
+                        <option id="activity" onclick="findThema('activity')">액티비티</option>
+                        <option id="media" onclick="findThema('media')">미디어명소</option>
+                      </select>  &nbsp; &nbsp;
+                    추천여행지 : &nbsp;
+                    <select name="recommend_place" id="place_list" multiple class="form-control" style="width:30%">
+                     </select>
+                     <button class="btn btn-default" onclick="selectLoc()">선택</button>
+                    </div>
+                </p>
+                <p> <div style="height:3%;width:100%;display: inline-flex" class="form-control">
+                    시간을 선택하세요 &nbsp;
+                    <select name="recommend_place" id="timeTable" multiple class="form-control" style="width:20%">
+                    </select>
+                   </div>
+                </p>
+                <div class="btn-group pull-right">
+    						  <!--<button type="button" class="btn btn-default ">Previous</button>-->
+    						  <button type="submit" class="btn btn-default " onclick="writeCheck()">Next</button>
+    						</div>
+          		</div>
+          	</div>
+		      </section><! --/wrapper -->
+      </section><!-- /MAIN CONTENT -->
+      <!--main content end-->
+      <!--footer start-->
+      <footer class="site-footer">
+          <div class="text-center">
+              &copy; 2018 DNA
+              <a href="schedule.html#" class="go-top">
+                  <i class="fa fa-angle-up"></i>
+              </a>
+          </div>
+      </footer>
+      <!--footer end-->
+  </section>
+
+    <!-- js placed at the end of the document so the pages load faster -->
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'js/jquery-1.8.3.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script class="include" type="text/javascript" src="{% static 'js/jquery.dcjqaccordion.2.7.js' %}"></script>
+    <script src="{% static 'js/jquery.scrollTo.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sparkline.js' %}"></script>
+
+
+    <!--common script for all pages-->
+    <script src="{% static 'js/common-scripts.js' %}"></script>
+
+    <script type="text/javascript" src="{% static 'js/gritter/js/jquery.gritter.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/gritter-conf.js' %}"></script>
+
+    <!--script for this page-->
+    <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+  <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <script type='text/javascript' src='https://code.jquery.com/jquery-1.8.3.js'></script>
+
+    <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script>
+  <script src="{% static 'js/bootstrap-datepicker.kr.js' %}" charset="UTF-8"></script>
+
+
+	<script type="application/javascript">
+
+  $(function(){
+      $('.input-group.date').datepicker({
+          calendarWeeks: false,
+          todayHighlight: true,
+          autoclose: true,
+          format: "yyyy-mm-dd",
+          language: "kr"
+      });
+  });
+
+  var place_list = $("#place_list"),
+      sche_list = $("#sche_list"),
+      timeTable = $("#timeTable");
+  var start_loc, end_loc = "{{en_l.loc_key}}"
+  var leg_num = 0;
+  if(!$("#place_list option:selected").val()) start_loc = "{{st_l.loc_key}}"
+
+  function findThema(button_key) {
+    console.log(button_key)
+    $.ajax({
+      type : "GET",
+      url : "findThema?key="+button_key+"&start_loc="+start_loc+"&end_loc="+end_loc,
+      dataType : "json",
+      success : function(data) {
+        console.log(data)
+        var datalist = '';
+        for(var i=0; i<data.length; i++) {
+          datalist += '<option id=' + data[i][0] + '>' + data[i][1] + '</option>'
+        }
+        place_list.html(datalist)
+      },
+      error : function() {
+        console.log("findThema : 통신실패")
+      }
+    })
+  }
+
+  function selectLoc() {
+    if(!$("#place_list option:selected").val()) {
+      alert("여행지를 선택해주세요");
+      $("#place_list").focus();
+      return;
+    }
+    var tmp_start = start_loc, tmp_end = $("#place_list option:selected").attr('id');
+    console.log(tmp_start, tmp_end, {{sche.travel_num}})
+    $.ajax({
+      type : "GET",
+      url : "findRoute?tnum="+{{sche.travel_num}}+"&lnum="+leg_num+"&start_loc="+tmp_start+"&end_loc="+tmp_end,
+      dataType : "json",
+      success : function(data) {
+        console.log(data)
+        /*var datalist = '';
+        for(var i=1; i<data.length; i++) {
+          for(var j=0; j<data[i].length; j++) {
+            datalist += '<option>' + data[i][j]['start_st'] + '&nbsp;->&nbsp;' + data[i][j]['end_st'] + '</option>'
+          }
+        }
+        timeTable.html(datalist)*/
+      },
+      error : function() {
+        console.log("findRoute : 통신실패")
+      }
+    })
+    var j = $("#place_list option:selected").val();
+    var datalist = '' + $("#sche_list").text() + '&nbsp;->&nbsp;' + j;
+    start_loc = tmp_end;
+    sche_list.html(datalist)
+  }
+        function myNavFunction(id) {
+            $("#date-popover").hide();
+            var nav = $("#" + id).data("navigation");
+            var to = $("#" + id).data("to");
+            console.log('nav ' + nav + ' to: ' + to.month + '/' + to.year);
+        }
+    </script>
+
+
+  </body>
+</html>
