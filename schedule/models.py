@@ -1,6 +1,15 @@
 from django.db import models
 
 # Create your models here.
+class RailalTrue(models.Model):
+    location = models.OneToOneField(
+        'Location_weight',
+        on_delete=models.CASCADE,
+        null=False,
+        primary_key=True,
+    )
+    has_time = models.TextField()
+
 class Location_dist(models.Model):
     location = models.OneToOneField(
         'Location_weight',
