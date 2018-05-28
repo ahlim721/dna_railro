@@ -99,7 +99,7 @@ def schedule(request):
         except RailalTrue.DoesNotExist:
             RailalTrue.objects.create(location = i, has_time = gettime)
     '''
-
+    '''
     for i in Location_weight.objects.all():
         if i == '용산':
             continue
@@ -116,7 +116,21 @@ def schedule(request):
             hhh.save()
         except RailalTrue.DoesNotExist:
             RailalTrue.objects.create(location = i, has_time = gettime)
-
+            '''
+    i = Location_weight.objects.get(location = '부산')
+    gettime = {}
+    for j in Location_weight.objects.all():
+        tmp = findRouteRail(i, j)
+        if tmp:
+            gettime[j.location] = tmp
+        else:
+            continue
+    try:
+        hhh = RailalTrue.objects.get(location = i)
+        hhh.has_time = gettime
+        hhh.save()
+    except RailalTrue.DoesNotExist:
+        RailalTrue.objects.create(location = i, has_time = gettime)
     return render(request, 'schedule/schedule.html', {'state_list' : state_li()})
 
 def test_api(request):

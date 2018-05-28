@@ -167,71 +167,82 @@
       <!--main content start-->
       <section id="main-content">
           <section class="wrapper site-min-height">
-            <div class="row mt">
-              <div class="col-lg-12">
-                <form name="scheduleform" method="post" action="doschedule">
-                  {% csrf_token %}
-                <p> 내일로 유형 :
-                  <select class="btn btn-round" name="railro_type">
-                    <option value="general">내일로 패스</option>
-                    <option value="premium">프리미엄 내일로 패스</option>
-                  </select>
-                </p>
-                <p> 일권 선택 :
-                  <select class="btn btn-round" name="railro_day">
-                    <option value="five" >5일권</option>
-                    <option value="seven">7일권</option>
-                  </select>
-                </p>
-                <p> 출발지 선택 :
-                  <div style="width:100%;display: inline-flex">
-                    <input style="width:50%"type="text"  class="form-control" placeholder="출발지를 선택하세요">
-                    <button id="search" type="button" class="btn btn-default btn-sm" onclick="toggle('source')" >검색</button>
-                  </div>
-                  <div id ="source_list" style="width:100%;display: none;">
-                    <select multiple class="form-control" style="width:30%">
-                      {% for key, val in state_list.items %}
-                        <option id="src_{{key}}" onclick="api('src_{{key}}')">{{ val }}</option>
-                      {% endfor %}
-        						 </select>
-                     <select name="start_loc" id="src_locList" multiple class="form-control" style="width:30%">
-         						</select>
-                  </div>
-                </p>
-                <p> 도착지 선택 :
-                  <div style="width:100%;display: inline-flex">
-                    <input style="width:50%"type="text"  class="form-control" placeholder="도착지를 선택하세요">
-                    <button id="search" type="button" class="btn btn-default btn-sm" onclick="toggle('dest')">검색</button>
-                  </div>
-                  <div id ="dest_list"style="width:100%;display: none">
-                    <select multiple class="form-control" style="width:30%">
-                      {% for key, val in state_list.items %}
-                        <option id="des_{{key}}" onclick="api('des_{{key}}')">{{ val }}</option>
-                      {% endfor %}
-                     </select>
-                    <select name="end_loc" id="des_locList" multiple class="form-control" style="width:30%">
-        						</select>
-                  </div>
-                </p>
-                <p> 출발 날짜 선택 :
-                  <div class="input-group date col-md-3" >
-                    <input type="text" name="start_date" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-                  </div>
-                </p>
-                <p> 도착 날짜 선택 :
-                  <div class="input-group date col-md-3" >
-                    <input type="text" name="end_date" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-                  </div>
-                </p>
-                {% csrf_token %}
-              </form>
-                <div class="btn-group pull-right">
-    						  <!--<button type="button" class="btn btn-default ">Previous</button>-->
-    						  <button type="submit" class="btn btn-default " onclick="writeCheck()">Next</button>
-    						</div>
-          		</div>
-          	</div>
+            <div class="container-fluid" style="padding-top:10px;margin-left: 15px;margin-right: 15px;">
+              <div class="row mt">
+                <div class="col-lg-12">
+                  <form name="scheduleform" method="post" action="doschedule">
+                    {% csrf_token %}
+                    <div class="" style="padding-top:15px">
+                      <p> 내일로 유형 :
+                        <select class="btn btn-round" id="railro_type">
+                          <option value="general">내일로 패스</option>
+                          <option value="premium">프리미엄 내일로 패스</option>
+                        </select>
+                      </p>
+                      <p> 일권 선택 :
+                        <select id= "railro_day"class="btn btn-round" name="railro_day">
+                          <option value="five" >5일권</option>
+                          <option value="seven">7일권</option>
+                        </select>
+                      </p>
 
+                    </div>
+                    <div class="" style="padding-top:15px">
+                      <p> 출발지 선택 :
+                        <div style="width:100%;display: inline-flex">
+                          <input style="width:50%"type="text"  class="form-control" placeholder="출발지를 선택하세요">
+                          <button id="search" type="button" class="btn btn-default btn-sm" onclick="toggle('source')" >검색</button>
+                        </div>
+                        <div id ="source_list" style="width:100%;display: none;">
+                          <select multiple class="form-control" style="width:30%">
+                            {% for key, val in state_list.items %}
+                              <option id="src_{{key}}" onclick="api('src_{{key}}')">{{ val }}</option>
+                            {% endfor %}
+              						 </select>
+                           <select name="start_loc" id="src_locList" multiple class="form-control" style="width:30%">
+               						</select>
+                        </div>
+                      </p>
+                      <p> 도착지 선택 :
+                        <div style="width:100%;display: inline-flex">
+                          <input style="width:50%"type="text"  class="form-control" placeholder="도착지를 선택하세요">
+                          <button id="search" type="button" class="btn btn-default btn-sm" onclick="toggle('dest')">검색</button>
+                        </div>
+                        <div id ="dest_list"style="width:100%;display: none">
+                          <select multiple class="form-control" style="width:30%">
+                            {% for key, val in state_list.items %}
+                              <option id="des_{{key}}" onclick="api('des_{{key}}')">{{ val }}</option>
+                            {% endfor %}
+                           </select>
+                          <select name="end_loc" id="des_locList" multiple class="form-control" style="width:30%">
+              						</select>
+                        </div>
+                      </p>
+
+                    </div>
+                    <div class="" style="padding-top:15px">
+                      <p> 출발 날짜 선택 :
+                        <div class="input-group date col-md-3" >
+                          <input id="from" type="text" name="start_date" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                        </div>
+                      </p>
+                      <p> 도착 날짜 선택 :
+                        <div class="input-group date col-md-3" >
+                          <input id="to" type="text" name="end_date" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                        </div>
+                      </p>
+                    </div>
+
+                  {% csrf_token %}
+                </form>
+                  <div class="btn-group pull-right">
+      						  <!--<button type="button" class="btn btn-default ">Previous</button>-->
+      						  <button type="submit" class="btn btn-default " onclick="writeCheck()">Next</button>
+      						</div>
+            		</div>
+            	</div>
+
+            </div>
 		</section><! --/wrapper -->
       </section><!-- /MAIN CONTENT -->
 
@@ -272,18 +283,68 @@
     <script type='application/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script>
   <script src="{% static 'js/bootstrap-datepicker.kr.js' %}" charset="UTF-8"></script>
 
-
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="//code.jquery.com/jquery.min.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
 
   <script type="application/javascript">
-
+    var val;
   $(function(){
-      $('.input-group.date').datepicker({
-          calendarWeeks: false,
+    $('#railro_day').change(function() {
+      val = $("#railro_day option:selected").val()
+    });
+});
+  $(function(){
+      $('#from').datepicker({
+           minDate :0,
+           calendarWeeks: false,
           todayHighlight: true,
           autoclose: true,
-          format: "yyyy-mm-dd",
-          language: "kr"
+          format: 'yyyy-mm-dd',
+          language: "kr",
+          onClose: function( selectedDate ) {
+                       // 시작일(fromDate) datepicker가 닫힐때
+                       // 종료일(toDate)의 선택할수있는 최소 날짜(minDate)를 선택한 시작일로 지정
+                       $("#to").datepicker( "option", "minDate", selectedDate );
+
+                       var date = $(this).datepicker('getDate');
+                       if (val=='five'){
+                        date.setDate(date.getDate() + 4); // Add days
+                        }
+                      else {
+                        date.setDate(date.getDate() + 6);
+                      }
+                       $('#to').datepicker("option", "maxDate", date);
+
+
+                   }
+
+
       });
+
+
+
+      $('#to').datepicker({
+          changeMonth: true,
+          maxDate: 0,
+          calendarWeeks: false,
+          autoclose: true,
+          format: 'yyyy-mm-dd',
+          language: "kr",
+          onClose: function( selectedDate ) {
+                        // 종료일(toDate) datepicker가 닫힐때
+                        // 시작일(fromDate)의 선택할수있는 최대 날짜(maxDate)를 선택한 종료일로 지정
+                        $("#from").datepicker( "option", "maxDate", selectedDate );
+                    }
+
+
+      });
+
+
+
+
+
+
   });
 
 
