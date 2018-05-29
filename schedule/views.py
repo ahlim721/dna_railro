@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 from .models import Location_weight, Station_info, State_info, Location_dist, Location_value, RailalTrue
 from django.contrib.auth.models import User
-from mypage.models import Travel_info
+from mypage.models import Travel_info, Travel_list
 import json
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
@@ -101,7 +101,9 @@ def schedule(request):
     '''
     '''
     for i in Location_weight.objects.all():
-        if i == '용산':
+        if i.location == '용산':
+            continue
+        if i.location == '부산':
             continue
         gettime = {}
         for j in Location_weight.objects.all():
@@ -116,21 +118,7 @@ def schedule(request):
             hhh.save()
         except RailalTrue.DoesNotExist:
             RailalTrue.objects.create(location = i, has_time = gettime)
-            '''
-    i = Location_weight.objects.get(location = '부산')
-    gettime = {}
-    for j in Location_weight.objects.all():
-        tmp = findRouteRail(i, j)
-        if tmp:
-            gettime[j.location] = tmp
-        else:
-            continue
-    try:
-        hhh = RailalTrue.objects.get(location = i)
-        hhh.has_time = gettime
-        hhh.save()
-    except RailalTrue.DoesNotExist:
-        RailalTrue.objects.create(location = i, has_time = gettime)
+    '''
     return render(request, 'schedule/schedule.html', {'state_list' : state_li()})
 
 def test_api(request):
@@ -185,7 +173,6 @@ def findThema(request):
     result = []
     pop_list = []
     thema_list = []
-    go_list = []
 
     #go = RailalTrue.objects.get(location = start_loc).has_time
 
@@ -202,8 +189,11 @@ def findThema(request):
     close_list = sorted(close_list, key=lambda k : close_list[k], reverse=True)
     close_list = close_list[:num_of_list]
 
+    cango = ast.literal_eval(RailalTrue.objects.get(location = start_loc).has_time)
+    go_list = list(cango.keys())
+
     # 선택한 테마에 대해 내림차순으로 정렬 후, 5개로 자른다.
-    Loc_list = list(set(pop_list)&set(thema_list)&set(close_list))
+    Loc_list = list(set(pop_list)&set(thema_list)&set(close_list)&set(go_list))
 
     for i in Loc_list :
         pk = Location_weight.objects.get(location = i)
@@ -212,8 +202,46 @@ def findThema(request):
         ])
     return HttpResponse(json.dumps(result), content_type="application/json")
 
-# start_st에서 end_st으로 갈 수 있는 경우의 시간표를 dictionary형태로 반환한다.
+def findRoute(request):
+    tnum = Travel_info.objects.get(travel_num = request.GET['tnum'])
+    lnum = request.GET['lnum']
+    start_loc = Location_weight.objects.get(loc_key = request.GET['start_loc'])
+    end_loc = Location_weight.objects.get(loc_key = request.GET['end_loc'])
 
+    route = ast.literal_eval(RailalTrue.objects.get(location = start_loc.location).has_time)
+    loc_route = route[end_loc.location]
+
+    return HttpResponse(json.dumps(loc_route), content_type="application/json")
+
+def saveTime(request):
+    tnum = Travel_info.objects.get(travel_num = request.GET['tnum'])
+    lnum = request.GET['lnum']
+    end_loc = Location_weight.objects.get(loc_key = request.GET['end_loc'])
+    start_date = request.GET['start_date']
+    detail = request.GET['detail']
+
+    if lnum == '1':
+        start_loc = Location_weight.objects.get(location = tnum.start_loc)
+    else:
+        start_loc = Location_weight.objects.get(location = Travel_list.objects.filter(travel_num = tnum).get(leg_num = lnum-1).start)
+
+    try:
+        hhh = Travel_list.objects.filter(travel_num = tnum).get(leg_num = lnum)
+        hhh.start_loc = start_loc
+        hhh.end_loc = end_loc
+        hhh.start_date = start_date
+        hhh.detail = detail
+        hhh.save()
+    except Travel_list.DoesNotExist:
+        Travel_list.objects.create(travel_num = tnum, leg_num = lnum, start=start_loc, end=end_loc, start_date = start_date, detail = detail)
+
+    lnum = str(int(lnum)+1)
+
+    return HttpResponse(json.dumps({'lnum' : lnum}), content_type="application/json")
+
+
+'''
+# start_st에서 end_st으로 갈 수 있는 경우의 시간표를 dictionary형태로 반환한다.
 def getTimeTable(start_st, end_st, railType):
     try:
         info = Station_info.objects.get(station = start_st)
@@ -379,66 +407,4 @@ def findRouteRail(start_loc, end_loc):
                 break
             result.append(step)
     return result
-
-
-def findRoute(request):
-    tnum = Travel_info.objects.get(travel_num = request.GET['tnum'])
-    lnum = request.GET['lnum']
-    start_loc = Location_weight.objects.get(loc_key = request.GET['start_loc'])
-    end_loc = Location_weight.objects.get(loc_key = request.GET['end_loc'])
-    # 출발, 도착 지역에 있는 기차역 중, main_station인 기차역을 가져온다.
-    start_st = Station_info.objects.filter(location = start_loc.location).filter(main_station = True)
-    end_st = Station_info.objects.filter(location = end_loc.location).filter(main_station = True)
-    legs = [lnum]
-    route = []
-
-    # 먼저 코레일에서 일반열차들을 이용하여 갈 수 있는 지 검색
-    for i in start_st:
-        for j in end_st:
-            tmp = findAtkorail(i.station[:len(i.station)-1], j.station[:len(j.station)-1])
-            if tmp:
-                for u in tmp:
-                    step = []
-                    first = {}
-                    second = {}
-                    first['start_st'] = i.station
-                    first['end_st'] = str(u)+'역'
-                    f = getTimeTable(first['start_st'], first['end_st'], tnum.railro_type)
-                    if not f:
-                        break
-                    first['timeTable'] = sorted(f, key=lambda k: k['arrivalTime'])
-                    step.append(first)
-                    second['start_st'] = str(u)+'역'
-                    second['end_st'] = j.station
-                    f = getTimeTable(second['start_st'], second['end_st'], tnum.railro_type)
-                    if not f:
-                        break
-                    second['timeTable'] = sorted(f, key=lambda k: k['arrivalTime'])
-                    step.append(second)
-                    route.append(step)
-    # 코레일에서 정보가 없을 경우, Google을 이용하여 검색
-    if not route:
-        for i in start_st:
-            for j in end_st:
-                route = findAtGoogle(i.station, j.station, tnum.railro_type)
-
-    result = [tnum.railro_type]
-    for i in route:
-        for j in i[0]["timeTable"]:
-            start = j['arrivalTime']
-            flag = True
-            step = [makeStep(i[0]['start_st'], i[0]['end_st'], j)]
-            for l in range(len(i)):
-                if l == 0:
-                    continue
-                tmp = determine(start, i[l]['timeTable'])
-                if not tmp:
-                    flag = False
-                    break
-                step.append(makeStep(i[l]['start_st'], i[l]['end_st'], tmp))
-                start = tmp['arrivalTime']
-            if not flag:
-                break
-            result.append(step)
-
-    return HttpResponse(json.dumps(result), content_type="application/json")
+'''

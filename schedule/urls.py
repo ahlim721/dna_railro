@@ -8,4 +8,5 @@ urlpatterns = [
     url(r'^doschedule', views.doschedule, name="doschedule"),
     url(r'^create/findThema?', views.findThema, name="findThema"),
     url(r'^create/findRoute?', views.findRoute, name="findRoute"),
+    url(r'^create/saveTime?',views.saveTime, name="saveTime"),
 ]

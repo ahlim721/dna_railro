@@ -96,9 +96,8 @@
                       </a>
                       <ul class="sub">
                           <!-- TODO 링크 연결하기-->
-                          <li class="active" ><a   href="user_update">회원정보 수정</a></li>
-                          <li><a  href="user_leave">회원탈퇴</a></li>
-                          <li><a  href="past_list">과거여행 정보</a></li>
+                          <li><a  href="/mypage/user_leave">회원탈퇴</a></li>
+                          <li class="active" ><a  href="/mypage/past_list">과거여행 정보</a></li>
                       </ul>
                   </li>
 
@@ -115,20 +114,35 @@
       <section id="main-content">
 
         <section class="wrapper site-min-height">
-          <div id="leave-page">
-            <div class="container">
-                {% for travel in Travel_list%}
-                  <div class="travel_list">
-                    <ul class="#">
-                      <li>내일로유형 : {{travel.railro_type}}<br></li>
-                      <li>내일로일권 : {{travel.railro_day}}<br></li>
-                      <li>도착날짜 : {{travel.start_date}}<br></li>
-                      <li>출발날짜 : {{travel.end_date}}<br></li>
-                      <li>출발지역 : {{travel.start_loc}}<br></li>
-                      <li>도착지역 : {{travel.end_loc}}<br></li>
-                    </ul>
-                  </div>
-                {% endfor %}
+          <div class="row mt" style="padding-top:50px;">
+            <div class="col-md-12">
+              <h4>
+                <i class="fa fa-angle-right"></i>
+                " 나의 여행리스트"
+              </h4>
+              <hr>
+              <table class="table table-striped table-advance table-hover">
+                <thead>
+                  <tr>
+                    <th class="rail_type">내일로일권</th>
+                    <th class="start_l">출발지역</th>
+                    <th class="end_l">도착지역</th>
+                    <th class="start_d">출발날짜</th>
+                    <th class="end_d">도착날짜</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for travel in Travel_list%}
+                    <tr>
+                      <td class="rail_type">{{travel.railro_day}}</td>
+                      <td class="start_l">{{travel.start_loc}}</td>
+                      <td class="end_l">{{travel.end_loc}}</td>
+                      <td class="start_d">{{travel.start_date}}</td>
+                      <td class="end_d">{{travel.end_date}}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
             </div>
           </div>
 

@@ -102,7 +102,6 @@
                       </a>
                       <ul class="sub">
                           <!-- TODO 링크 연결하기-->
-                          <li><a  href="/mypage/user_update">회원정보 수정</a></li>
                           <li><a  href="/mypage/user_leave">회원탈퇴</a></li>
                           <li><a  href="/mypage/past_list">과거여행 정보</a></li>
                       </ul>
@@ -132,30 +131,39 @@
                       도착날짜 : {{ sche.end_date }} <hr>
                     </div>
                 </p>
-                <p> <div style="width:100%;display: inline-flex" id="sche_list" class="form-control">{{sche.start_loc}}</div></p>
+                <p> <div style="width:100%;display: inline-flex" id="sche_list" class="form-control">{{sche.start_loc}}({{sche.start_date}})</div></p>
+                <p> <div style="width:100%;display: inline-flex" id="numbering" class="form-control">1번째 여행지</div></p>
+                <input type='hidden' id="leg_num" value='1'>
                 <p> <div style="height:3%;width:100%;display: inline-flex" class="form-control">
-                    테마를 선택하세요 &nbsp;
-                      <select multiple class="form-control" style="width:20%"name="railro_thema" >
+                    테마를 <br>  선택하세요 &nbsp;
+                      <select multiple class="form-control" style="width:20%" name="railro_thema" >
                         <option id="eat" onclick="findThema('eat')">맛집</option>
                         <option id="picture" onclick="findThema('picture')">인생샷</option>
                         <option id="activity" onclick="findThema('activity')">액티비티</option>
                         <option id="media" onclick="findThema('media')">미디어명소</option>
                       </select>  &nbsp; &nbsp;
-                    추천여행지 : &nbsp;
+                    추천여행지 :
                     <select name="recommend_place" id="place_list" multiple class="form-control" style="width:30%">
-                     </select>
+                     </select> &nbsp; &nbsp;
+                    날짜를 <br> &nbsp; &nbsp;선택하세요 &nbsp;
+                     <div class="input-group date col-xs-3" id='datetimepicker3'>
+                       <input id="sd" type="text" class="form-control" name="start_date">
+                       <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                     </div>
                      <button class="btn btn-default" onclick="selectLoc()">선택</button>
                     </div>
                 </p>
                 <p> <div style="height:3%;width:100%;display: inline-flex" class="form-control">
                     시간을 선택하세요 &nbsp;
-                    <select name="recommend_place" id="timeTable" multiple class="form-control" style="width:20%">
+                    <select name="time_table" id="timeTable" multiple class="form-control" style="width:80%">
                     </select>
                    </div>
                 </p>
                 <div class="btn-group pull-right">
     						  <!--<button type="button" class="btn btn-default ">Previous</button>-->
-    						  <button type="submit" class="btn btn-default " onclick="writeCheck()">Next</button>
+    						  <button type="submit" class="btn btn-default " onclick="saveTime()">Next</button>
     						</div>
           		</div>
           	</div>
@@ -198,8 +206,8 @@
   <script src="{% static 'js/bootstrap-datepicker.kr.js' %}" charset="UTF-8"></script>
 
 
-	<script type="application/javascript">
 
+<script type="text/javascript">
   $(function(){
       $('.input-group.date').datepicker({
           calendarWeeks: false,
@@ -210,11 +218,23 @@
       });
   });
 
+  $(function(){
+    $('#datetimepicker3').datepicker({
+      calendarWeeks: false,
+      todayHighlight: true,
+      autoclose: true,
+        format: "yyyy-mm-dd",
+        language: "kr"
+    });
+  });
+</script>
+
+<script type="application/javascript">
   var place_list = $("#place_list"),
       sche_list = $("#sche_list"),
       timeTable = $("#timeTable");
-  var start_loc, end_loc = "{{en_l.loc_key}}"
-  var leg_num = 0;
+  var start_loc, end_loc = "{{en_l.loc_key}}";
+  var leg_num = 1;
   if(!$("#place_list option:selected").val()) start_loc = "{{st_l.loc_key}}"
 
   function findThema(button_key) {
@@ -251,23 +271,64 @@
       dataType : "json",
       success : function(data) {
         console.log(data)
-        /*var datalist = '';
-        for(var i=1; i<data.length; i++) {
+        var tablelist = '';
+        for(var i=0; i<data.length; i++) {
+          tablelist += '<option value=' + String(data[i].object) + '>'
           for(var j=0; j<data[i].length; j++) {
-            datalist += '<option>' + data[i][j]['start_st'] + '&nbsp;->&nbsp;' + data[i][j]['end_st'] + '</option>'
+            s = String(data[i][j]['timeTable']['departureTime'])
+            e = String(data[i][j]['timeTable']['arrivalTime'])
+            while(s.length != 4){
+              s = "0" + s
+            }
+            while(e.length != 4){
+              e = "0" + e
+            }
+            s = s.substr(0,2) + ':' + s.substr(2,2)
+            e = e.substr(0,2) + ':' + e.substr(2,2)
+            tablelist += data[i][j]['start_st'] + '&nbsp;->&nbsp;' + data[i][j]['end_st'] + '&nbsp;'
+            tablelist += s + '&nbsp;->&nbsp;' + e + '&nbsp;' + data[i][j]['timeTable']['trainClass'] + '&nbsp;'
           }
+          tablelist += '</option>'
         }
-        timeTable.html(datalist)*/
+        timeTable.html(tablelist)
       },
       error : function() {
         console.log("findRoute : 통신실패")
       }
     })
     var j = $("#place_list option:selected").val();
-    var datalist = '' + $("#sche_list").text() + '&nbsp;->&nbsp;' + j;
+    var datalist = '' + $("#sche_list").text() + '&nbsp;->&nbsp;' + j + $('#sd').val();
     start_loc = tmp_end;
     sche_list.html(datalist)
   }
+
+  function saveTime() {
+    if(!$("#timeTable option:selected").val()) {
+      alert("여행지를 선택해주세요");
+      $("#timeTable").focus();
+      return;
+    }
+    var sd = $('#sd').val();
+    var time = $("#timeTable option:selected").text()
+    var tmp_end = $("#place_list option:selected").attr('id');
+    $.ajax({
+      type : "GET",
+      url : "saveTime?tnum="+{{sche.travel_num}}+"&lnum="+$('#leg_num').val()+"&end_loc="+tmp_end+"&start_date="+sd+"&detail="+time,
+      dataType : "json",
+      success : function(data) {
+        console.log("통신성공")
+        var leg_num = data['lnum']
+        var num = ''+leg_num+'번째 여행지'
+        $('#numbering').html(num)
+        $('#leg_num').val(leg_num)
+      },
+      error : function() {
+        console.log("saveTime : 통신실패")
+      }
+    })
+
+  }
+
         function myNavFunction(id) {
             $("#date-popover").hide();
             var nav = $("#" + id).data("navigation");

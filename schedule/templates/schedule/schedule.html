@@ -149,7 +149,6 @@
                       </a>
                       <ul class="sub">
                           <!-- TODO 링크 연결하기-->
-                          <li><a  href="/mypage/user_update">회원정보 수정</a></li>
                           <li><a  href="/mypage/user_leave">회원탈퇴</a></li>
                           <li><a  href="/mypage/past_list">과거여행 정보</a></li>
                       </ul>
@@ -174,14 +173,14 @@
                     {% csrf_token %}
                     <div class="" style="padding-top:15px">
                       <p> 내일로 유형 :
-                        <select class="btn btn-round" id="railro_type">
-                          <option value="general">내일로 패스</option>
+                        <select class="btn btn-round" id="railro_type" name="railro_type">
+                          <option value="general" selected>내일로 패스</option>
                           <option value="premium">프리미엄 내일로 패스</option>
                         </select>
                       </p>
                       <p> 일권 선택 :
                         <select id= "railro_day"class="btn btn-round" name="railro_day">
-                          <option value="five" >5일권</option>
+                          <option value="five" selected>5일권</option>
                           <option value="seven">7일권</option>
                         </select>
                       </p>
@@ -223,12 +222,12 @@
                     <div class="" style="padding-top:15px">
                       <p> 출발 날짜 선택 :
                         <div class="input-group date col-md-3" >
-                          <input id="from" type="text" name="start_date" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                          <input id='from' type="text" name="start_date" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                         </div>
                       </p>
                       <p> 도착 날짜 선택 :
                         <div class="input-group date col-md-3" >
-                          <input id="to" type="text" name="end_date" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                          <input id='to' type="text" name="end_date" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                         </div>
                       </p>
                     </div>
@@ -287,65 +286,56 @@
 <script src="//code.jquery.com/jquery.min.js"></script>
 <script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
 
+<script type="text/javascript">
+$(function(){
+    $('#from').datepicker({
+        minDate :0,
+        calendarWeeks: false,
+        todayHighlight: true,
+        autoclose: true,
+        format: 'yyyy-mm-dd',
+        language: "kr",
+        onClose: function( selectedDate ) {
+                     // 시작일(fromDate) datepicker가 닫힐때
+                     // 종료일(toDate)의 선택할수있는 최소 날짜(minDate)를 선택한 시작일로 지정
+                     $("#to").datepicker( "option", "minDate", selectedDate );
+                     var date = $(this).datepicker('getDate');
+                     if (val=='five'){
+                      date.setDate(date.getDate() + 4); // Add days
+                      }
+                    else {
+                      date.setDate(date.getDate() + 6);
+                    }
+                     $('#to').datepicker("option", "maxDate", date);
+                 }
+    });
+
+    $('#to').datepicker({
+        changeMonth: true,
+        maxDate: 0,
+        calendarWeeks: false,
+        autoclose: true,
+        format: 'yyyy-mm-dd',
+        language: "kr",
+        onClose: function( selectedDate ) {
+                      // 종료일(toDate) datepicker가 닫힐때
+                      // 시작일(fromDate)의 선택할수있는 최대 날짜(maxDate)를 선택한 종료일로 지정
+                      $("#from").datepicker( "option", "maxDate", selectedDate);
+                  }
+
+    });
+});
+</script>
+
   <script type="application/javascript">
     var val;
   $(function(){
     $('#railro_day').change(function() {
       val = $("#railro_day option:selected").val()
+      console.log(val)
     });
 });
-  $(function(){
-      $('#from').datepicker({
-           minDate :0,
-           calendarWeeks: false,
-          todayHighlight: true,
-          autoclose: true,
-          format: 'yyyy-mm-dd',
-          language: "kr",
-          onClose: function( selectedDate ) {
-                       // 시작일(fromDate) datepicker가 닫힐때
-                       // 종료일(toDate)의 선택할수있는 최소 날짜(minDate)를 선택한 시작일로 지정
-                       $("#to").datepicker( "option", "minDate", selectedDate );
 
-                       var date = $(this).datepicker('getDate');
-                       if (val=='five'){
-                        date.setDate(date.getDate() + 4); // Add days
-                        }
-                      else {
-                        date.setDate(date.getDate() + 6);
-                      }
-                       $('#to').datepicker("option", "maxDate", date);
-
-
-                   }
-
-
-      });
-
-
-
-      $('#to').datepicker({
-          changeMonth: true,
-          maxDate: 0,
-          calendarWeeks: false,
-          autoclose: true,
-          format: 'yyyy-mm-dd',
-          language: "kr",
-          onClose: function( selectedDate ) {
-                        // 종료일(toDate) datepicker가 닫힐때
-                        // 시작일(fromDate)의 선택할수있는 최대 날짜(maxDate)를 선택한 종료일로 지정
-                        $("#from").datepicker( "option", "maxDate", selectedDate );
-                    }
-
-
-      });
-
-
-
-
-
-
-  });
 
 
   var src_locList = $("#src_locList"),

@@ -39,8 +39,24 @@ class Travel_info(models.Model):
         'schedule.Location_weight',
         related_name = "end_location",
     )
-    Travel_list = models.TextField(default="")
     is_done = models.BooleanField(default = False)
 
-    def __str__(self):
-        return self.Travel_list
+class Travel_list(models.Model):
+    travel_num = models.ForeignKey(
+        'Travel_info',
+        on_delete = models.CASCADE,
+        null=False,
+    )
+    leg_num = models.FloatField(null=False)
+    start = models.ForeignKey(
+        'schedule.Location_weight',
+        related_name = "start_loc",
+        null=False
+    )
+    end = models.ForeignKey(
+        'schedule.Location_weight',
+        related_name = "end_loc",
+        null=False
+    )
+    start_date = models.DateField(null=False)
+    detail = models.CharField(null=False, max_length=250, default='')
