@@ -3,15 +3,102 @@ import urllib.request
 import json
 from urllib.parse import quote
 from schedule.models import Location_weight
-from .models import Location_info
+from .models import Location_info,Location_festival
 import ast
+import datetime
+from django.core import serializers
+
+
+# 현재시간을 기준으로 url가져옴
+current_day = datetime.datetime.now()
+current_day = str(current_day)
+current_day = current_day.replace("-","")
+current_day = current_day.split(" ")
+current_day = current_day[0]
 
 # Create your views here.
-'''
+def makeFestival():
+    check_city = ('서울', '인천', '대전', '대구', '광주', '부산', '울산', '세종특별자치시')
+
+    num = 150
+    url = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/searchFestival?ServiceKey=At7nsk22aMwcKGFIVzySErarurTmPVDlxtfkUqF%2FGKDTtfWtNpvpFPZs8evW4Lkvf910SjBDwpxS2WMcB4JBlA%3D%3D&MobileOS=ETC&MobileApp=AppTest&numOfRows="+str(num)+"&arrange=P&eventStartDate="+current_day+"&_type=json"
+    request = urllib.request.Request(url)
+    response = urllib.request.urlopen(request)
+    tmp = response.read().decode('utf8')
+
+    jj = json.loads(tmp)
+
+    for i in range(0,num):
+
+        addr = jj["response"]["body"]["items"]["item"][i]["addr1"]
+        pic = jj["response"]["body"]["items"]["item"][i]["firstimage"]
+        sdate = jj["response"]["body"]["items"]["item"][i]["eventstartdate"]
+        edate = jj["response"]["body"]["items"]["item"][i]["eventenddate"]
+
+        title = jj["response"]["body"]["items"]["item"][i]["title"]
+
+        city = addr
+        flag = True
+
+        # 특별시, 광역시, 특별자치시를 제외
+        for j in check_city:
+            cc = city.find(j)
+            if cc!=-1:
+                city = j
+                flag = False
+                break
+
+
+        list = addr.split(" ")
+
+
+        # 지역이름에 '시군구'가 들어있는 지역을 제외
+        if flag!=False and list[1].find("군산") and list[1].find("군위") and list[1].find("구로") and list[1].find("구미") and list[1].find("대구"):
+            flag = False
+            tmp = list[1]
+            city = tmp[0:len(list[1])-1]
+
+
+
+        if flag is True:
+            if list[1].find("시"):
+                city = list[1].replace("시", "")
+            elif (list[1].find("군")):
+                city = list[1].replace("군", "")
+            elif list[1].find("구"):
+                city = list[1].replace("구", "")
+
+
+        for j in Location_weight.objects.all():
+            j = str(j)
+            if city == j:
+                Location_festival.objects.create(city = city,addr = addr, pic = pic, title= title, start_date = sdate, end_date= edate)
+                break
+
+
+def makeInfo():
+    for i in Location_weight.objects.all():
+        url = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/searchKeyword?ServiceKey=At7nsk22aMwcKGFIVzySErarurTmPVDlxtfkUqF%2FGKDTtfWtNpvpFPZs8evW4Lkvf910SjBDwpxS2WMcB4JBlA%3D%3D&keyword=" + urllib.parse.quote(i.location) + "&MobileOS=ETC&MobileApp=AppTest&numOfRows=6&arrange=P&_type=json"
+        request = urllib.request.Request(url)
+        response = urllib.request.urlopen(request)
+        tmp = response.read().decode('utf8')
+
+        jj = json.loads(tmp)
+        city = i.location
+
+        for j in range(0,6):
+
+            addr= jj["response"]["body"]["items"]["item"][j]["addr1"]
+            pic = jj["response"]["body"]["items"]["item"][j]["firstimage"]
+            title = jj["response"]["body"]["items"]["item"][j]["title"]
+
+            Location_info.objects.create(city = city,addr = addr, pic = pic, title= title)
+
 def useApi():
+    '''
     city = {}
     for i in Location_weight.objects.all():
-        url = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/searchKeyword?ServiceKey=At7nsk22aMwcKGFIVzySErarurTmPVDlxtfkUqF%2FGKDTtfWtNpvpFPZs8evW4Lkvf910SjBDwpxS2WMcB4JBlA%3D%3D&keyword=" + urllib.parse.quote(i.location) + "&MobileOS=ETC&MobileApp=AppTest&numOfRows=1&arrange=P&_type=json"
+        url = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/searchKeyword?ServiceKey=At7nsk22aMwcKGFIVzySErarurTmPVDlxtfkUqF%2FGKDTtfWtNpvpFPZs8evW4Lkvf910SjBDwpxS2WMcB4JBlA%3D%3D&keyword=" + urllib.parse.quote(i.location) + "&MobileOS=ETC&MobileApp=AppTest&numOfRows=6&arrange=P&_type=json"
         request = urllib.request.Request(url)
         response = urllib.request.urlopen(request)
         tmp = response.read().decode('utf8')
@@ -29,16 +116,19 @@ def useApi():
         city[i.location] = body
 
     Location_info.objects.create(recommend_place = city)
-'''
+    '''
+
+
 
 def location(request):
     #print("pic is "+pic+"city name is "+i+"address is"+addr+"title is "+title)
-    '''useApi()'''
-    i = Location_info.objects.get(id=1)
-    rec = i.recommend_place
-    hello = ast.literal_eval(rec)
-    loc = Location_weight.objects.all()
-    loc_name = []
-    for i in loc:
-        loc_name.append(i.location)
-    return render(request, 'location/location.html', {"hello" : hello, "loc_name" : loc_name})
+    #useApi()
+    #makeInfo()
+    #makeFestival()
+
+
+    loc_json = serializers.serialize("json", Location_info.objects.all())
+    loc = Location_info.objects.all()
+    festival = Location_festival.objects.all()
+
+    return render(request, 'location/location.html', {"loc" : loc, "festival" : festival, "loc_json" : loc_json})
