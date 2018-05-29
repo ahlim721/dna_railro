@@ -115,13 +115,47 @@
 
             <br>
             <div class=" pull-right" >
-              <button type="button" class="btn btn-default" onclick="api()">검색</button>
+              <input id="input" type="text" name="" value="">
+              <button id="search"type="button" class="btn btn-default" onclick="">검색</button>
               <button type="button" class="btn btn-default ">더보기</button>
             </div>
             <br>
 
-            <div id="place_list">
+            <div id="target" class="row mt" style="width:100%">
+              {% if loc %}
+                {% for locRow in loc %}
+                <div class="col-lg-4 col-sm-4 col-xs desc">
+                  <img src="{{ locRow.pic }}" width=400px, height=300px alt="">
+                  <p><strong> 제목 : {{locRow.title}}</strong></p>
+                  <p> 지역 이름 : {{locRow.city }}</p>
+                  <p> 주소 : {{locRow.addr}}</p>
+                </div>
+                {% endfor %}
+              {% else %}
+                <p> info 게시물이 없습니다.</p>
+              {% endif %}
+
+              {% if festival %}
+                {% for fesRow in festival %}
+                <div class="col-lg-4 col-sm-4 col-xs desc">
+                  <img src="{{ fesRow.pic }}" width=400px, height=300px alt="">
+                  <p><strong> 제목 : {{fesRow.title}}</strong></p>
+                  <p> 지역 이름 : {{fesRow.city }}</p>
+                  <p> 주소 : {{fesRow.addr}}</p>
+                  <p> 축제시작일 : {{fesRow.start_date}}</p>
+                  <p> 축제종료일 : {{fesRow.end_date}}</p>
+                </div>
+                {% endfor %}
+              {% else %}
+                <p> festival 게시물이 없습니다.</p>
+              {% endif %}
+
+
             </div>
+
+
+
+
 
             <!-- Modal -->
             <div class="modal fade" id="myModal" role="dialog">
@@ -173,10 +207,37 @@
 
     <script type = "application/javascript">
 
+    $( document ).ready( function() {
+        $( "#search" ).click( function() {
+          $( "#target" ).empty();
+
+
+
+          var input = document.getElementById("input").value;
+          console.log(input);
+
+
+          var tmp = {{loc_json | safe}};
+
+          var datalist = '<div class="row mt">';
+
+          for (j in tmp){
+            console.log(j);
+            if (input == j['fields'][city])
+              datalist += '<p>'+j['fields'][city]+'</p>'
+          }
+          datalist += '</div>'
+          place_list.html(datalist)
+
+
+        } );
+      } );
+
+
+
+
     var place_list = $("#place_list");
 
-    data = {{ hello|safe }}
-    loc = {{ loc_name|safe }}
     var datalist = '<div class="row mt">';
     for(i in loc) {
       datalist += '<div class="col-lg-4 col-sm-4 col-xs desc">'

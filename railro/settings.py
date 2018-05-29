@@ -84,14 +84,14 @@ WSGI_APPLICATION = 'railro.wsgi.application'
 # The setting of DATABASE using Mysql
 DATABASES = {
     'default': {
-        #'ENGINE': 'django.db.backends.sqlite3',
-        #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        'ENGINE' : 'django.db.backends.mysql',
-        'NAME' : 'dnaDB',
-        'USER' : 'dna',
-        'PASSWORD' : '1004',
-        'HOST' : '220.67.128.170',
-        'PORT' : '3306',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        #'ENGINE' : 'django.db.backends.mysql',
+        #'NAME' : 'dnaDB',
+        #'USER' : 'dna',
+        #'PASSWORD' : '1004',
+        #'HOST' : '220.67.128.170',
+        #'PORT' : '3306',
     }
 }
 
