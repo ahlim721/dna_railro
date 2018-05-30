@@ -29,35 +29,6 @@
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-    <script>
-    function toggleList(num) {
-        var list = $("#"+num+"_travellist")
-        $.ajax({
-          type: "GET",
-          url: "selectList?key="+num,
-          dataType: "json",
-          success: function(data) {
-            var datalist = '';
-            for (var i=0; i<data.length; i++){
-              datalist += '<tr>'
-              datalist += '<td class="start">'+data[i]['start']+'</td>'
-              datalist += '<td class="end">'+data[i]['end']'</td>'
-              datalist += '<td class="start_date">'+data[i]['start_date']+'</td>'
-              datalist += '<td class="detail">'+data[i]['detail']+'</td>'
-              datalist += '</tr>'
-            }
-            $("#"+num+"travel").html(datalist)
-          }
-        })
-        var display_status = list.css("display")
-
-        if(display_status === "none")
-          list.css("display","inline-flex")
-        else
-          list.css("display","none")
-    };
-    </script>
-
   </head>
 
   <body>
@@ -126,7 +97,7 @@
                       <ul class="sub">
                           <!-- TODO 링크 연결하기-->
                           <li><a  href="/mypage/user_leave">회원탈퇴</a></li>
-                          <li class="active" ><a  href="/mypage/past_list">과거여행 정보</a></li>
+                          <li><a  href="/mypage/past_list">과거여행 정보</a></li>
                       </ul>
                   </li>
 
@@ -147,7 +118,7 @@
             <div class="col-md-12">
               <h4>
                 <i class="fa fa-angle-right"></i>
-                " 나의 여행리스트"
+                 최종 여행리스트
               </h4>
               <hr>
               <table class="table table-striped table-advance table-hover">
@@ -155,30 +126,32 @@
                   <tr>
                     <th class="rail_type">내일로일권</th>
                     <th class="start_l">출발지역</th>
-                    <th class="end_l">도착지역</th>
+                    <!--<th class="end_l">도착지역</th>-->
                     <th class="start_d">출발날짜</th>
                     <th class="end_d">도착날짜</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {% for travel in Travel_list%}
                     <tr>
-                      <td class="rail_type">{{travel.railro_day}}</td>
-                      <td class="start_l">{{travel.start_loc}}</td>
-                      <td class="end_l">{{travel.end_loc}}</td>
-                      <td class="start_d">{{travel.start_date}}</td>
-                      <td class="end_d">{{travel.end_date}}</td>
-                      <!--<button onclick="toggleList('{{travel.travel_num}}')"> Detatil </button>-->
+                      <td class="rail_type">{{travel_info.railro_day}}</td>
+                      <td class="start_l">{{travel_info.start_loc}}</td>
+                      <!--<td class="end_l">{{travel_info.end_loc}}</td>-->
+                      <td class="start_d">{{travel_info.start_date}}</td>
+                      <td class="end_d">{{travel_info.end_date}}</td>
                   </tr>
-                  {% endfor %}
                 </tbody>
               </table>
-              <!--
+            </div>
+          </div>
+
+          <div class="row mt">
+            <div class="col-md-12">
               <h4>
                 <i class="fa fa-angle-right"></i>
-                Details
+                 Details
               </h4>
-              <table class="{{travel.travel_num}}_travellist" style="display:none;">
+              <hr>
+              <table class="table table-striped table-advance table-hover">
                 <thead>
                   <tr>
                     <th class="start">출발지역</th>
@@ -187,10 +160,17 @@
                     <th class="detail">상제정보</th>
                   </tr>
                 </thead>
-                <tbody id="{{travel.travel_num}}_travel">
+                <tbody>
+                  {% for i in travel_list %}
+                    <tr>
+                      <td class="start">{{i.start}}</td>
+                      <td class="end">{{i.end}}</td>
+                      <td class="start_date">{{i.start_date}}</td>
+                      <td class="detail">{{i.detail}}</td>
+                  </tr>
+                  {% endfor %}
                 </tbody>
               </table>
-            -->
             </div>
           </div>
 

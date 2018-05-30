@@ -126,12 +126,12 @@
                       내일로유형 : {{ sche.railro_type }} <hr>
                       내일로일권 : {{ sche.railro_day }} <hr>
                       출발지 : {{ sche.start_loc }} <hr>
-                      도착지 : {{ sche.end_loc }} <hr>
+                      <!--도착지 : {{ sche.end_loc }} <hr>-->
                       출발날짜 : {{ sche.start_date }} <hr>
                       도착날짜 : {{ sche.end_date }} <hr>
                     </div>
                 </p>
-                <p> <div style="width:100%;display: inline-flex" id="sche_list" class="form-control">{{sche.start_loc}}({{sche.start_date}})</div></p>
+                <p> <div style="width:100%;display: inline-flex" id="sche_list" class="form-control">{{sche.start_loc}}</div></p>
                 <p> <div style="width:100%;display: inline-flex" id="numbering" class="form-control">1번째 여행지</div></p>
                 <input type='hidden' id="leg_num" value='1'>
                 <p> <div style="height:3%;width:100%;display: inline-flex" class="form-control">
@@ -241,7 +241,7 @@
     console.log(button_key)
     $.ajax({
       type : "GET",
-      url : "findThema?key="+button_key+"&start_loc="+start_loc+"&end_loc="+end_loc,
+      url : "findThema?key="+button_key+"&start_loc="+start_loc+"&end_loc="+end_loc+"&tnum="+{{sche.travel_num}},
       dataType : "json",
       success : function(data) {
         console.log(data)
@@ -297,7 +297,7 @@
       }
     })
     var j = $("#place_list option:selected").val();
-    var datalist = '' + $("#sche_list").text() + '&nbsp;->&nbsp;' + j + $('#sd').val();
+    var datalist = '' + $("#sche_list").text() + $('#sd').val() + '&nbsp;->&nbsp;' + j;
     start_loc = tmp_end;
     sche_list.html(datalist)
   }
@@ -310,17 +310,23 @@
     }
     var sd = $('#sd').val();
     var time = $("#timeTable option:selected").text()
-    var tmp_end = $("#place_list option:selected").attr('id');
+    var tmp_end = $("#place_list option:selected").attr('id')
     $.ajax({
       type : "GET",
       url : "saveTime?tnum="+{{sche.travel_num}}+"&lnum="+$('#leg_num').val()+"&end_loc="+tmp_end+"&start_date="+sd+"&detail="+time,
       dataType : "json",
       success : function(data) {
         console.log("통신성공")
+        console.log(data['flag'])
+
+        if(data['flag'] == 'True') {
+          window.location = "/schedule/finalSchedule?tnum=" + {{sche.travel_num}}
+        }
         var leg_num = data['lnum']
         var num = ''+leg_num+'번째 여행지'
         $('#numbering').html(num)
         $('#leg_num').val(leg_num)
+        // javascript redirect 로 사용하자
       },
       error : function() {
         console.log("saveTime : 통신실패")

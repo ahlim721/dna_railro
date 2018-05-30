@@ -145,7 +145,8 @@ def doschedule(request):
                         railro_type = request.POST['railro_type'],
                         railro_day = request.POST['railro_day'],
                         start_loc = Location_weight.objects.get(loc_key=request.POST['start_loc']),
-                        end_loc = Location_weight.objects.get(loc_key=request.POST['end_loc']),
+                        #end_loc = Location_weight.objects.get(loc_key=request.POST['end_loc']),
+                        end_loc = Location_weight.objects.get(loc_key='location7'),
                         start_date = request.POST['start_date'],
                         end_date = request.POST['end_date'],
                         )
@@ -169,10 +170,12 @@ def findThema(request):
     start_loc = Location_weight.objects.get(loc_key = request.GET['start_loc'])
     end_loc = Location_weight.objects.get(loc_key = request.GET['end_loc'])
     num_of_list = int(Location_weight.objects.count()/2)
+    tnum = Travel_info.objects.get(travel_num = request.GET['tnum'])
 
     result = []
     pop_list = []
     thema_list = []
+    dongo_list = [tnum.start_loc]
 
     #go = RailalTrue.objects.get(location = start_loc).has_time
 
@@ -192,8 +195,12 @@ def findThema(request):
     cango = ast.literal_eval(RailalTrue.objects.get(location = start_loc).has_time)
     go_list = list(cango.keys())
 
+    dongo = Travel_list.objects.filter(travel_num = tnum)
+    for i in dongo:
+        dongo_list.append(i.end)
+
     # 선택한 테마에 대해 내림차순으로 정렬 후, 5개로 자른다.
-    Loc_list = list(set(pop_list)&set(thema_list)&set(close_list)&set(go_list))
+    Loc_list = list((set(pop_list)&set(thema_list)&set(close_list)&set(go_list)).difference(set(dongo_list)))
 
     for i in Loc_list :
         pk = Location_weight.objects.get(location = i)
@@ -219,11 +226,12 @@ def saveTime(request):
     end_loc = Location_weight.objects.get(loc_key = request.GET['end_loc'])
     start_date = request.GET['start_date']
     detail = request.GET['detail']
+    flag = "False"
 
     if lnum == '1':
         start_loc = Location_weight.objects.get(location = tnum.start_loc)
     else:
-        start_loc = Location_weight.objects.get(location = Travel_list.objects.filter(travel_num = tnum).get(leg_num = lnum-1).start)
+        start_loc = Location_weight.objects.get(location = Travel_list.objects.filter(travel_num = tnum).get(leg_num = int(lnum)-1).end)
 
     try:
         hhh = Travel_list.objects.filter(travel_num = tnum).get(leg_num = lnum)
@@ -235,10 +243,23 @@ def saveTime(request):
     except Travel_list.DoesNotExist:
         Travel_list.objects.create(travel_num = tnum, leg_num = lnum, start=start_loc, end=end_loc, start_date = start_date, detail = detail)
 
+    if str(start_date) == str(tnum.end_date):
+        print("True")
+        flag = "True"
+
     lnum = str(int(lnum)+1)
 
-    return HttpResponse(json.dumps({'lnum' : lnum}), content_type="application/json")
+    return HttpResponse(json.dumps({'lnum' : lnum, 'flag' : flag}), content_type="application/json")
 
+def finalSchedule(request):
+    travel_list = Travel_list.objects.filter(travel_num = request.GET['tnum']).order_by('leg_num')
+    travel_info = Travel_info.objects.get(travel_num = request.GET['tnum'])
+
+    tl = []
+    for i in travel_list:
+        tl.append(i)
+
+    return render(request, 'schedule/finalSchedule.html', {'travel_list' : tl, 'travel_info' : travel_info})
 
 '''
 # start_st에서 end_st으로 갈 수 있는 경우의 시간표를 dictionary형태로 반환한다.

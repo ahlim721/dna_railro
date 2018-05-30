@@ -9,4 +9,5 @@ urlpatterns = [
     url(r'^create/findThema?', views.findThema, name="findThema"),
     url(r'^create/findRoute?', views.findRoute, name="findRoute"),
     url(r'^create/saveTime?',views.saveTime, name="saveTime"),
+    url(r'^finalSchedule?', views.finalSchedule, name="finalSchedule")
 ]

@@ -4,5 +4,6 @@ from . import views
 urlpatterns = [
     url(r'^$', views.user_leave, name='user_leave'),
     url(r'^user_leave', views.user_leave, name='user_leave'),
-    url(r'^past_list', views.user_travellist, name='user_travellist')
+    url(r'^past_list', views.user_travellist, name='user_travellist'),
+    url(r'^selectList?', views.selectList, name='selectList'),
 ]

@@ -202,6 +202,29 @@
 
 
             <p><div style="width:95%;height:3%;display" class="form-control">
+              <table class="table table-striped table-advance table-hover">
+                <thead>
+                  <tr>
+                    <th class="id">아이디</th>
+                    <th class="show">댓글</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% if commentData %}
+                    {% for commentRow in commentData %}
+                      <tr>
+                        <td class="id">{{commentRow.cname}}</td>
+                        <td class="show">{{commentRow.comm}}</td>
+                      </tr>
+                    {% endfor %}
+                  {% else %}
+                    <tr>
+                      <td class="show">댓글이 없습니다.</td>
+                    </tr>
+                  {% endif %}
+                </tbody>
+              </table>
+              <!--
               {% if commentData %}
 
                 {% for commentRow in commentData %}
@@ -211,6 +234,7 @@
               {% else %}
                 <p>댓글이 없습니다.</p>
               {% endif %}
+            -->
             </div></p>
           </div>
 

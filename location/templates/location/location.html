@@ -114,9 +114,8 @@
 
             <br>
             <div class=" pull-right" >
-              <input id="input" type="text" name="" value="">
-              <button id="search"type="button" class="btn btn-default" onclick="">검색</button>
-              <button type="button" class="btn btn-default ">더보기</button>
+              <input id="input" type="text" name="" value="" style="width:300px;">
+              <button type="button" class="btn btn-default" onclick="searchLoc()">검색</button>
             </div>
             <br>
 
@@ -148,12 +147,7 @@
               {% else %}
                 <p> festival 게시물이 없습니다.</p>
               {% endif %}
-
-
             </div>
-
-
-
 
 
             <!-- Modal -->
@@ -206,48 +200,35 @@
 
     <script type = "application/javascript">
 
-    $( document ).ready( function() {
-        $( "#search" ).click( function() {
-          $( "#target" ).empty();
 
-
-
-          var input = document.getElementById("input").value;
-          console.log(input);
-
-
-          var tmp = {{loc_json | safe}};
-
-          var datalist = '<div class="row mt">';
-
-          for (j in tmp){
-            console.log(j);
-            if (input == j['fields'][city])
-              datalist += '<p>'+j['fields'][city]+'</p>'
-          }
-          datalist += '</div>'
-          place_list.html(datalist)
-
-
-        } );
-      } );
-
-
-
-
-    var place_list = $("#place_list");
-
-    var datalist = '<div class="row mt">';
-    for(i in loc) {
-      datalist += '<div class="col-lg-4 col-sm-4 col-xs desc">'
-      datalist += '<img src=' + data[loc[i]][0]['pic'] + ' width=400px, height=300px>'
-      datalist += '<p><strong>' + '제목 : ' + data[loc[i]][0]['title'] + '</strong></p>'
-      datalist += '<p>' + '지역이름 : ' + loc[i] + '</p>'
-      datalist += '<p>' + '주소 : ' + data[loc[i]][0]['addr'] + '</p>'
-      datalist += '</div>'
-    }
-    datalist += '</div>'
-    place_list.html(datalist)
+      function searchLoc() {
+        console.log('thd')
+        $.ajax({
+          type: "GET",
+          url: "searchLoc?loc=" + $("#input").val(),
+          dataType: "json",
+          success: function(data) {
+            console.log(data)
+            if(data.length == 0) {
+              alert("지역을 확인해주세요")
+            }
+            else {
+              var datalist = '';
+              for (var i = 0; i < data.length; i++) {
+                datalist += '<div class="col-lg-4 col-sm-4 col-xs desc">'
+                datalist += '<img src=' + data[i]['pic'] + ' width=400px, height=300px alt="">'
+                datalist += '<p><strong> 제목 : ' + data[i]['title'] + '</strong></p>'
+                datalist += '<p> 지역 이름 : ' + data[i]['city'] + '</p>'
+                datalist += '<p> 주소 : ' + data[i]['addr'] + '</p> </div>'
+              }
+              $("#target").html(datalist)
+            }
+          },
+          error: function() {
+            console.log("통신실패");
+          },
+        })
+      }
     </script>
 
     <!--common script for all pages-->

@@ -30,3 +30,10 @@ def user_travellist(request):
     for i in get_travel:
         li.append(i)
     return render(request, 'mypage/user_travellist.html', {'Travel_list' : li})
+
+def selectList(request):
+    get_travel = Travel_list.objects.filter(travel_num = request.GET['key'])
+    li =[]
+    for i in get_travel:
+        li.append(i)
+    return HttpResponse(json.dumps(li), content_type = "application/json")
