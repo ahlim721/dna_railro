@@ -85,7 +85,7 @@
                   <li class="sub-menu">
                       <a href="/location">
                           <i class="fa fa-map-marker"></i>
-                          <span>장소추천</span>
+                          <span>핫플레이스</span>
                       </a>
                   </li>
 
@@ -136,7 +136,7 @@
                 <input type='hidden' id="leg_num" value='1'>
                 <p> <div style="height:3%;width:100%;display: inline-flex" class="form-control">
                     테마를 <br>  선택하세요 &nbsp;
-                      <select multiple class="form-control" style="width:20%" name="railro_thema" >
+                      <select multiple class="form-control" style="width:20%" id="railro_thema" >
                         <option id="eat" onclick="findThema('eat')">맛집</option>
                         <option id="picture" onclick="findThema('picture')">인생샷</option>
                         <option id="activity" onclick="findThema('activity')">액티비티</option>
@@ -296,10 +296,12 @@
         console.log("findRoute : 통신실패")
       }
     })
+    /*
     var j = $("#place_list option:selected").val();
     var datalist = '' + $("#sche_list").text() + $('#sd').val() + '&nbsp;->&nbsp;' + j;
     start_loc = tmp_end;
     sche_list.html(datalist)
+    */
   }
 
   function saveTime() {
@@ -313,7 +315,7 @@
     var tmp_end = $("#place_list option:selected").attr('id')
     $.ajax({
       type : "GET",
-      url : "saveTime?tnum="+{{sche.travel_num}}+"&lnum="+$('#leg_num').val()+"&end_loc="+tmp_end+"&start_date="+sd+"&detail="+time,
+      url : "saveTime?tnum="+{{sche.travel_num}}+"&lnum="+$('#leg_num').val()+"&end_loc="+tmp_end+"&start_date="+sd+"&detail="+time+"&thema="+$("#railro_thema option:selected").text(),
       dataType : "json",
       success : function(data) {
         console.log("통신성공")
@@ -332,7 +334,10 @@
         console.log("saveTime : 통신실패")
       }
     })
-
+    var j = $("#place_list option:selected").val();
+    var datalist = '' + $("#sche_list").text() + $('#sd').val() + '&nbsp;->&nbsp;' + j;
+    start_loc = tmp_end;
+    sche_list.html(datalist)
   }
 
         function myNavFunction(id) {

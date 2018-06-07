@@ -59,4 +59,5 @@ class Travel_list(models.Model):
         null=False
     )
     start_date = models.DateField(null=False)
+    thema = models.CharField(max_length = 20, default = '맛집')
     detail = models.CharField(null=False, max_length=250, default='')

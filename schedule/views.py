@@ -166,7 +166,7 @@ def create(request, tnum):
     return render(request, 'schedule/create.html', {'sche' : sche, 'st_l' : st_l, 'en_l' : en_l})
 
 def findThema(request):
-    thema = "-" + request.GET['key']
+    thema_key = "-" + request.GET['key']
     start_loc = Location_weight.objects.get(loc_key = request.GET['start_loc'])
     end_loc = Location_weight.objects.get(loc_key = request.GET['end_loc'])
     num_of_list = int(Location_weight.objects.count()/2)
@@ -175,32 +175,55 @@ def findThema(request):
     result = []
     pop_list = []
     thema_list = []
-    dongo_list = [tnum.start_loc]
+    #dongo_list = [tnum.start_loc]
+    dongo_list = []
 
     #go = RailalTrue.objects.get(location = start_loc).has_time
 
-    pop = Location_weight.objects.order_by('-popular')#[:num_of_list]
+    pop = Location_weight.objects.order_by('-popular')
+    for i in pop:
+        print("정렬 후 나누기 전, 지역이름 : ",i.location, " 인기도 : ", i.popular)
+    pop = pop[:num_of_list]
     for i in pop:
         pop_list.append(i.location)
+    print("정렬 후 나눈 인기도 리스트 : ", pop_list)
 
-    thema = Location_weight.objects.order_by(thema)[:num_of_list]
+    thema = Location_weight.objects.order_by(thema_key)
+    if thema_key == '-eat':
+        for i in thema:
+            print("정렬 후 나누기 전, 지역이름 : ",i.location, " 맛집 가중치 : ", i.eat)
+    if thema_key == '-activity':
+        for i in thema:
+            print("정렬 후 나누기 전, 지역이름 : ",i.location, " 액티비티 가중치 : ", i.activity)
+    if thema_key == '-picture':
+        for i in thema:
+            print("정렬 후 나누기 전, 지역이름 : ",i.location, " 인생샷 가중치 : ", i.picture)
+    if thema_key == '-media':
+        for i in thema:
+            print("정렬 후 나누기 전, 지역이름 : ",i.location, " 미디어 가중치 : ", i.media)
+    thema = thema[:num_of_list]
     for i in thema:
         thema_list.append(i.location)
+    print("정렬 후 나눈 테마 리스트 : ", thema_list, "\n")
 
     tmmp = Location_dist.objects.get(location = start_loc)
     close_list = ast.literal_eval(tmmp.dist)
-    close_list = sorted(close_list, key=lambda k : close_list[k], reverse=True)
+    close_list = sorted(close_list, key=lambda k : close_list[k], reverse=False)
     close_list = close_list[:num_of_list]
+    print("시작 지역에서 가까운 리스트 : ", close_list, "\n")
 
     cango = ast.literal_eval(RailalTrue.objects.get(location = start_loc).has_time)
     go_list = list(cango.keys())
+    print("시작 지역에서 갈 수 있는 리스트 : ", go_list, "\n")
 
     dongo = Travel_list.objects.filter(travel_num = tnum)
     for i in dongo:
-        dongo_list.append(i.end)
+        dongo_list.append(Location_weight.objects.get(location = i.end).location)
+    print("시작 지역에서 갈 수 없는 리스트 : ", dongo_list, "\n")
 
     # 선택한 테마에 대해 내림차순으로 정렬 후, 5개로 자른다.
     Loc_list = list((set(pop_list)&set(thema_list)&set(close_list)&set(go_list)).difference(set(dongo_list)))
+    print("추천 리스트 : ", Loc_list)
 
     for i in Loc_list :
         pk = Location_weight.objects.get(location = i)
@@ -226,6 +249,7 @@ def saveTime(request):
     end_loc = Location_weight.objects.get(loc_key = request.GET['end_loc'])
     start_date = request.GET['start_date']
     detail = request.GET['detail']
+    thema = request.GET['thema']
     flag = "False"
 
     if lnum == '1':
@@ -239,9 +263,10 @@ def saveTime(request):
         hhh.end_loc = end_loc
         hhh.start_date = start_date
         hhh.detail = detail
+        hhh.thema = thema
         hhh.save()
     except Travel_list.DoesNotExist:
-        Travel_list.objects.create(travel_num = tnum, leg_num = lnum, start=start_loc, end=end_loc, start_date = start_date, detail = detail)
+        Travel_list.objects.create(travel_num = tnum, leg_num = lnum, start=start_loc, end=end_loc, start_date = start_date, detail = detail, thema = thema)
 
     if str(start_date) == str(tnum.end_date):
         print("True")

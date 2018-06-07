@@ -102,7 +102,56 @@
       form.submit();
     }
 
+    function input_click() {
 
+      var f = $("#from").val();
+      if(f){
+        var year = f.substr(0,4);
+        var mon1 = f.substr(5,2);
+        var day1 = f.substr(8,2);
+
+        // String to Int
+        year *= 1;
+        mon1 *= 1;
+        day1 *= 1;
+
+        var day2 = day1;
+        var mon2 = mon1;
+        var val = $("#railro_day option:selected").val()
+
+        if (val == 'seven'){
+          day2 += 6;
+        }
+        else {
+          day2 += 4;
+        }
+        // 4, 6, 9, 11 은 30일까지 존재
+        // 30일이 넘어가면 mon 값 증가
+        if (day2 > 30 && (mon1 == 4 || mon1 == 6 || mon1 == 9 || mon1 == 11 )){
+          mon2 += 1;
+          day2 -= 30;
+        }
+        if (day2>31 && ( mon1 == 1 || mon1 == 3 || mon1 == 5 || mon1 == 7 || mon1 == 8 || mon1 == 10 || mon1 == 12 )){
+          mon2 = mon1+1;
+          day2 -= 31;
+        }
+        // mon 와 day가 1의 자리일 경우 , string에 0 추가
+        var t = "0";
+        if(day2 <10){
+          day2 = t+day2;
+        }
+        if(mon2 <10){
+          mon2 = t+mon2;
+        }
+        if(mon2 >12){
+          mon2 -= 12;
+          year += 1;
+        }
+
+        var full_year = year+'-'+mon2+'-'+day2;
+          $('#to').val(full_year);
+        }
+      }
   </script>
 </head>
 
@@ -153,7 +202,7 @@
           <li class="sub-menu">
             <a href="/location">
                           <i class="fa fa-map-marker"></i>
-                          <span>장소추천</span>
+                          <span>핫플레이스</span>
                       </a>
           </li>
 
@@ -214,7 +263,7 @@
                       <input style="width:50%" type="text" class="form-control" placeholder="출발지를 선택하세요">
                       <button id="search" type="button" class="btn btn-default btn-sm" onclick="toggle('source')">검색</button>
                     </div>
-                    <div id="source_list" style="width:100%;display: none;">
+                    <div id="source_list" style="width:100%;display: inline-flex">
                       <select multiple class="form-control" style="width:30%">
                             {% for key, val in state_list.items %}
                               <option id="src_{{key}}" onclick="api('src_{{key}}')">{{ val }}</option>
@@ -245,7 +294,7 @@
                 <div class="" style="padding-top:15px">
                   <p> 출발 날짜 선택 :
                     <div class="input-group date col-md-3">
-                      <input id="from" type="text" name="start_date" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                      <input id="from" type="text" name="start_date" class="form-control" onchange="input_click();" ><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                     </div>
                   </p>
                   <p> 도착 날짜 선택 :

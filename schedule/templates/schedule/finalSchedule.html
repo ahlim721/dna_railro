@@ -79,7 +79,7 @@
                   <li class="sub-menu">
                       <a href="/location">
                           <i class="fa fa-map-marker"></i>
-                          <span>장소추천</span>
+                          <span>핫플레이스</span>
                       </a>
                   </li>
 
@@ -157,7 +157,8 @@
                     <th class="start">출발지역</th>
                     <th class="end">도착지역</th>
                     <th class="start_date">출발날짜</th>
-                    <th class="detail">상제정보</th>
+                    <th class="thema">여행테마</th>
+                    <th class="detail">상세정보</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -166,6 +167,7 @@
                       <td class="start">{{i.start}}</td>
                       <td class="end">{{i.end}}</td>
                       <td class="start_date">{{i.start_date}}</td>
+                      <td class="thema">{{i.thema}}</td>
                       <td class="detail">{{i.detail}}</td>
                   </tr>
                   {% endfor %}
